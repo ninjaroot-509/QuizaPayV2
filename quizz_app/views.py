@@ -36,13 +36,6 @@ def create_game_code():
     prefix = 'QP-'
     return prefix + ''.join(random.choices(string.ascii_lowercase + string.digits, k=3))
 
-
-class Testadev(APIView):
-    def get(self, requests, format=None):
-        user_list = User.objects.all() 
-        serializer = UserSerializer(user_list, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
 class UserListView(APIView):
     def get(self, request, format=None):
         pk = request.GET.get('pk', None)
@@ -384,6 +377,21 @@ class QuizPayView(APIView):
         return JsonResponse({'status': 1, 'message': 'success!!'})
 
 class QuizResultsView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+        resu = results.objects.filter(player=user)
+        serializer = ResultSerializer(resu, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
     def post(self, request, format=None):
         pk = request.GET.get('pk', None)
         if pk != None:
@@ -398,10 +406,11 @@ class QuizResultsView(APIView):
         score = request.data.get("score")
         total = request.data.get("total")
         quizz_id = request.data.get("quizz_id")
-        gain = request.data.get("gain")
         prix = request.data.get("prix")
+        Preduce = int(prix) / int(total)
+        som = Preduce * int(score) * 2
         getquizzes = get_object_or_404(quizzes, pk=quizz_id)
-        results.objects.create(player=user, score=score, total=total, quizz_id=getquizzes, gain=gain, prix=prix)
+        results.objects.create(player=user, score=score, total=total, quizz_id=getquizzes, gain=som, prix=prix)
         return JsonResponse({'status': 1, 'message': 'success!!'})
 
 class QuizDoneView(APIView):
@@ -470,6 +479,44 @@ class CoinView(APIView):
             Coin.objects.filter(user=user).update(coins=F('coins') + montant1)
         return JsonResponse({'status': 1, 'message': 'success!!'})
 
+
+class UserDetailsView(APIView):
+    def post(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(pk=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+        progression = request.data.get("progression")
+        user.progression = user.progression + progression
+        user.save()
+        if int(user.progression) >= 100:
+            user.progression = 0
+            user.experience = user.experience + 50
+            user.level = user.level + 1
+            user.save()
+        return JsonResponse({'status': 1, 'message': 'success!!'})
+
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(pk=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+        if not user:
+            return JsonResponse({'status': 0, 'message': 'User with this id not found'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = LevelSerializer(user)
+        return JsonResponse(serializer.data, safe=False)
 
 class WalletView(APIView):
     def get_object(self, pk):

@@ -3,8 +3,28 @@ import request from '../Components/Common/HttpRequests'
 import { Link } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 // import OwlCarousel from 'react-owl-carousel';
+import useResultats from '../state/resultat/hooks/useResultats';
+import useLevels from '../state/level/hooks/useLevels';
+import { getUser } from '../Components/Common/Auth/Sessions';
+import moment from 'moment';
 
 const Home = () => {
+    const [resultat, isLoading, setResultats] = useResultats();
+    const [level, isLoadinglevel, setLevels] = useLevels();
+
+    useEffect(() => {
+        if (!resultat.list || resultat.list.length === 0) {
+          setResultats();
+        }
+      }, [resultat, setResultats]);
+
+      useEffect(() => {
+        if (!level.details || level.details.length === 0) {
+          setLevels();
+        }
+      }, [level, setLevels]);
+
+      const user = getUser()
 
     return (
         <>
@@ -55,13 +75,13 @@ const Home = () => {
                     
                             </div>
                             <div className="progress-arc-info">
-                                <p className="progress-arc-title">59%</p> 
+                                <p className="progress-arc-title">{level?.details?.progression}%</p> 
                             </div>
                     
                         <div className="progress-arc-summary-info" style={{marginTop: 10}}>
                             <p className="progress-arc-summary-title">Achèvement du profil</p>
                     
-                            <p className="progress-arc-summary-subtitle">Castin Stanley</p>
+                            <p className="progress-arc-summary-subtitle">{user.first_name} {user.last_name}</p>
                     
                             <p className="progress-arc-summary-text">Complétez votre profil en remplissant des champs d'informations sur le profil, complétant les quêtes et déverrouillage des badges</p>
                         </div>
@@ -100,14 +120,14 @@ const Home = () => {
                         <div className="level-progress-badge">
                         <p className="level-progress-badge-title">Level</p>
                     
-                        <p className="level-progress-badge-text">1</p>
+                        <p className="level-progress-badge-text">{level?.details?.level}</p>
                         </div>
                     
                         <div className="progress-stat">
                         <div className="bar-progress-wrap big">
-                            <p className="bar-progress-info start negative progress-with-text">+38EXP <span className="light">atteindre le niveau suivant</span></p>
+                            <p className="bar-progress-info start negative progress-with-text">+50 EXP <span className="light">si vous atteignez le niveau suivant</span></p>
                     
-                            <p className="progress-stat-info" style={{top: 20}}>13.625 Total des points d'exp reçus</p>
+                            <p className="progress-stat-info" style={{top: 20}}>{level?.details?.experience} Total des points d'exp reçus</p>
                         </div>
                     
                         <div id="exp-to-next-level" className="progress-stat-bar"></div>
@@ -115,11 +135,12 @@ const Home = () => {
                     </div>
 
                     <div className="widget-box no-padding">
-                        <p className="widget-box-title">Historique de l'expérience</p>
+                        <p className="widget-box-title">Historique de vos résultats</p>
                     
-                        <div className="widget-box-content small-margin-top padded-for-scroll small" data-simplebar>
+                        <div className="widget-box-content small-margin-top padded-for-scroll small" style={{flex: '1 1 auto',overflowY: 'scroll'}}>
                         <div className="exp-line-list scroll-content">
-                            <div className="exp-line">
+                        {resultat?.list?.slice(0, 10).map((item) =>
+                            <div className="exp-line" key={item.id}>
                             <svg className="exp-line-icon icon-badges">
                                 <use xlinkHref="#svg-badges"></use>
                             </svg>
@@ -128,64 +149,15 @@ const Home = () => {
                                 <svg className="text-sticker-icon icon-plus-small">
                                 <use xlinkHref="#svg-plus-small"></use>
                                 </svg>
-                                80 EXP
+                                {item.gain} HTG
                             </p>
                     
-                            <p className="exp-line-text">Continue comme ça!Vous avez atteint le niveau II du badge "Warrior"</p>
+                            <p className="exp-line-text">"{item.quizz_name}" un score de {item.score} sur {item.total}.</p>
                     
-                            <p className="exp-line-timestamp">29 minutes ago</p>
+                            <p className="exp-line-timestamp">{moment(item.created_at).calendar()}</p>
                             </div>
+                        )}
                     
-                            <div className="exp-line">
-                            <svg className="exp-line-icon icon-quests">
-                                <use xlinkHref="#svg-quests"></use>
-                            </svg>
-                    
-                            <p className="text-sticker small-text">
-                                <svg className="text-sticker-icon icon-plus-small">
-                                <use xlinkHref="#svg-plus-small"></use>
-                                </svg>
-                                65 EXP
-                            </p>
-                    
-                            <p className="exp-line-text">Félicitations!Vous avez terminé la quête «rien à cacher»</p>
-                    
-                            <p className="exp-line-timestamp">7 hours ago</p>
-                            </div>
-                    
-                            <div className="exp-line">
-                            <svg className="exp-line-icon icon-badges">
-                                <use xlinkHref="#svg-badges"></use>
-                            </svg>
-                    
-                            <p className="text-sticker small-text">
-                                <svg className="text-sticker-icon icon-plus-small">
-                                <use xlinkHref="#svg-plus-small"></use>
-                                </svg>
-                                40 EXP
-                            </p>
-                    
-                            <p className="exp-line-text">Bon travail!Vous venez de déverrouiller le badge "caféiné"</p>
-                    
-                            <p className="exp-line-timestamp">2 days ago</p>
-                            </div>
-                    
-                            <div className="exp-line">
-                            <svg className="exp-line-icon icon-badges">
-                                <use xlinkHref="#svg-badges"></use>
-                            </svg>
-                    
-                            <p className="text-sticker small-text">
-                                <svg className="text-sticker-icon icon-plus-small">
-                                <use xlinkHref="#svg-plus-small"></use>
-                                </svg>
-                                100 EXP
-                            </p>
-                    
-                            <p className="exp-line-text">Étonnante!Vous venez de déverrouiller le badge "Gold User"</p>
-                    
-                            <p className="exp-line-timestamp">5 days ago</p>
-                            </div>
                         </div>
                         </div>
                     </div>
@@ -193,7 +165,7 @@ const Home = () => {
                 </div>
                 </div>
 
-                <div className="grid">
+                {/* <div className="grid">
                 <div className="grid grid-12-3 stretched">
                     <div className="widget-box">
                         <p className="widget-box-title">Top Friends leaderboards</p>
@@ -449,7 +421,7 @@ const Home = () => {
 
                 </div>
 
-                </div>
+                </div> */}
             </div>
         </>
     )

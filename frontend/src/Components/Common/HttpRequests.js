@@ -14,16 +14,16 @@ if (token) config.headers['Authorization'] = `Token ${token}`
 // request Post 
 const postLogin = (phone, password) => axios.post(`${url}auth/login`, { phone, password })
 const postRegister = (phone, password) => axios.post(`${url}auth/register`, { phone, password })
-const postInfo = (last_name, first_name) => axios.post(`${url}info-user/`, JSON.stringify({ 
+const postInfo = (last_name, first_name) => axios.post(`${url}info--details/`, JSON.stringify({ 
     last_name, 
     first_name 
 }), config)
+const postProgress = (progression) => axios.post(`${url}user-details/`, { progression }, config)
 const postPayQ = (prix) => axios.post(`${url}pay/`, { prix }, config)
-const postResults = (right, nbQuestions, quizId, som, prix) => axios.post(`${url}results/`, JSON.stringify({
+const postResults = (right, nbQuestions, quizId, prix) => axios.post(`${url}results/`, JSON.stringify({
     score: right,
     total: nbQuestions,
     quizz_id: quizId,
-    gain: som,
     prix: prix
 }), config)
 const postWinPay = (prixQ, nbQuestions, right) => axios.post(`${url}wallet/`, JSON.stringify({
@@ -72,8 +72,7 @@ const postTry = () => axios.post(`${url}try-agains/`, config)
     // request GET 
 const getPlayers = (gameID) => axios.get(`${url}players/?gameID=${gameID}`, config).then(res => res.data)
 const getStart = (gameID) => axios.get(`${url}start/?gameID=${gameID}`, config).then(res => res.data)
-const getQuizOrder = (id, userId) => axios.get(`${url}quizdone/?quizz_id=${id}&user=${userId}`).then(res => res.data)
-const getProfile = () => axios.get(`${url}profile/`, config).then(res => res.data)
+const getQuizOrder = (id, userId) => axios.get(`${url}quizdone/?quizz_id=${id}&-details=${userId}`).then(res => res.data)
 const getWallet = () => axios.get(`${url}wallet/`, config).then(res => res.data)
     .catch(error => {
         if (error.response.status === 401) {
@@ -82,14 +81,13 @@ const getWallet = () => axios.get(`${url}wallet/`, config).then(res => res.data)
         }
     });
 const getCoin = () => axios.get(`${url}coins/`, config).then(res => res.data)
+const getLevel = () => axios.get(`${url}user-details/`, config).then(res => res.data)
+const getFriendRequest = () => axios.get(`${url}demandereculist/`, config).then(res => res.data)
+const getResultat = () => axios.get(`${url}results/`, config).then(res => res.data)
 
 const getRetrait = () => axios.get(`${url}retrait/`, config).then(res => res.data)
-const getQuizzes = () => axios.get(`${url}quizzes/`).then(res => res.data)
-const getCategory = () => axios.get(`${url}category/`).then(res => res.data)
-const getCategoryQuiz = (id) => axios.get(`${url}quizzes/?category=${id}`).then(res => res.data)
-const getCategoryId = (cateId) => axios.get(`${url}category/${cateId}/`).then(res => res.data)
 const getQuizz = (id) => axios.get(`${url}quizzes/${id}/`).then(res => res.data)
 const getQuestions = (id) => axios.get(`${url}questions/?quizz_id=${id}`).then(res => res.data)
 const getQuestionsV2 = (nbQuestions, category) => axios.get(`${url}questions/?nbQ=${nbQuestions}&category=${category}`, config).then(res => res.data)
 
-export default { postLogin, postRegister, postInfo, postPayQ, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getStart, getProfile, getQuizzes, getQuizz, getQuestions, getQuestionsV2, getCategory, getCategoryQuiz, getCategoryId, getQuizOrder, getWallet, getCoin, getRetrait }
+export default { postLogin, postRegister, postInfo, postProgress, postPayQ, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getStart, getQuizz, getQuestions, getQuestionsV2, getQuizOrder, getWallet, getCoin, getResultat, getRetrait, getLevel, getFriendRequest }

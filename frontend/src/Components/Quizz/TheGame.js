@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import request from '../Common/HttpRequests'
-// import {btnStyle} from '../Common/StyleObjects'
 import useSound from 'use-sound';
 
-export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handleWrong, handleAllQN, timerStyle, handleGameOver, timeactive, getTime, timeActiveBtn, timeDesactive, questions, nbQuestions, setStartTimer }) => {
+export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handleAllQN, handleGameOver, timeactive, getTime, timeActiveBtn, timeDesactive, questions, nbQuestions, setStartTimer }) => {
     const [questionNo, setQuestionNo] = useState(0)
-    const [btnDisable, setbtnDisable] = useState(true)
     const [disable, setdisable] = useState(false)
     const [choiceB, setChoiceB] = useState('')
     
@@ -33,10 +31,8 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
         }
         if (timeactive === false){
             setdisable(true)
-            setbtnDisable(false)
         } else {
             setdisable(false)
-            setbtnDisable(true)
         }
         if (questions.length != 0) {
             setStartTimer(true)
@@ -48,20 +44,18 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
 
     const handleAnswerClick = (ev) => {
         setChoiceB(ev.currentTarget.name)
+        if (questions[questionNo].correct_option === ev.currentTarget.name) {
+            handleCorrect()
+            playCorrect()
+        } else {
+            playWrong()
+        }
         setTimeout(() => {
             nextQuestion()
             setChoiceB('') 
         }, 2000);
         setdisable(true)
-        setbtnDisable(false)
         timeDesactive()
-        if (questions[questionNo].correct_option === ev.currentTarget.name) {
-            playCorrect()
-            handleCorrect()
-        } else {
-            playWrong()
-            handleWrong()
-        }
     }
 
     const [playWin1] = useSound(
@@ -95,7 +89,6 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
         handleAllQN()
         getTime()
         setdisable(false)
-        setbtnDisable(true)
         // if (questions.length === questionNo + 1){
         //     handleGameOver(questions.length)
         // } 

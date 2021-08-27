@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { getToken, getUser, removeUserSession } from '../Common/Auth/Sessions';
-import { 
-    Facebook, 
-    Twitter, 
-    Instagram, 
-    Search, 
-    Menu, 
-    // AccountCircle, 
-    // ExitToApp, 
-    // DoubleArrow
-} from '@material-ui/icons';
 import { Link } from 'react-router-dom'
 import request from '../Common/HttpRequests'
 import Toggle from '../../themes/Toggle'
-import ScrollTop from "react-scrolltop-button";
-import { ArrowUpward } from '@material-ui/icons';
 import useWallets from '../../state/wallet/hooks/useWallets';
+import ProgressBar from "@ramonak/react-progress-bar";
+import useLevels from '../../state/level/hooks/useLevels';
+import useFriendRequests from '../../state/friendrequest/hooks/useFriendRequests';
+import moment from 'moment';
 
 const Navbar = ({theme, toggleTheme}) => {
+  const refbasket = useRef()
+  const refmenu = useRef()
+  const reffriendrequest = useRef()
+  const refchat = useRef()
+  const refnotifi = useRef()
+  const refsearch = useRef()
+  const [level, isLoadinglevel, setLevels] = useLevels();
     const [wallet, isLoading, setWallets] = useWallets();
+    const [friendrequestlist, isLoadingfr, setFriendRequests] = useFriendRequests();
     const [menu, setMenu] = useState('')
     const [search, setSearch] = useState('')
     const [basket, setBasket] = useState('')
     const [chat, setChat] = useState('')
+    const [friendrequest, setFriendRequest] = useState('')
+    const [notifi, setNotifi] = useState('')
 
     const handleMenu = () => {
       if (menu === 'active') {
@@ -56,19 +58,54 @@ const Navbar = ({theme, toggleTheme}) => {
     }
 };
 
-  const handleClickOutside = () => {
-    setMenu('')
-    setSearch('')
-    setBasket('')
-    setChat('')
+const toggleFR = () => {
+    if (friendrequest === 'active') {
+        setFriendRequest('')
+    } else {
+        setFriendRequest('active')
+    }
+};
+
+const toggleNotifi = () => {
+    if (notifi === 'active') {
+        setNotifi('')
+    } else {
+        setNotifi('active')
+    }
+};
+
+  const handleClickOutside = (env) => {
+    if (basket == 'active' && refbasket.current && !refbasket.current.contains(env.target)) {
+      setBasket('')
+    }
+    if (menu == 'active' && refmenu.current && !refmenu.current.contains(env.target)) {
+      setMenu('')
+    }
+    if (search == 'active' && refsearch.current && !refsearch.current.contains(env.target)) {
+      setSearch('')
+    }
+    if (chat == 'active' && refchat.current && !refchat.current.contains(env.target)) {
+      setChat('')
+    }
+    if (friendrequest == 'active' && reffriendrequest.current && !reffriendrequest.current.contains(env.target)) {
+      setFriendRequest('')
+    }
+    if (notifi == 'active' && refnotifi.current && !refnotifi.current.contains(env.target)) {
+      setNotifi('')
+    }
   }
 
-  // useEffect(() => {
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [menu, basket, chat]);
+  const handlelogout = () => {
+    removeUserSession()
+    window.location.reload()
+  }
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menu, basket, chat, notifi, friendrequest, search]);
 
     useEffect(() => {
       if (!wallet.details || wallet.details.length === 0) {
@@ -76,10 +113,24 @@ const Navbar = ({theme, toggleTheme}) => {
       }
     }, [wallet, setWallets]);
 
+    useEffect(() => {
+      if (!level.details || level.details.length === 0) {
+        setLevels();
+      }
+    }, [level, setLevels]);
+
+    useEffect(() => {
+      if (!friendrequestlist.list || friendrequestlist.list.length === 0) {
+        setFriendRequests();
+      }
+    }, [friendrequestlist, setFriendRequests]);
+
+    const user = getUser()
+
 
     return (
       <>
-        <nav id="navigation-widget-small" className={`navigation-widget navigation-widget-desktop ${menu === 'active'? '': 'closed'} sidebar left ${menu === 'active'? 'hidden': 'delayed'}`}>
+        <nav id="navigation-widget-small" ref={refmenu} className={`navigation-widget navigation-widget-desktop ${menu === 'active'? '': 'closed'} sidebar left ${menu === 'active'? 'hidden': 'delayed'}`}>
           <Link className="user-avatar small no-outline online" to="#">
           <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
@@ -93,40 +144,33 @@ const Navbar = ({theme, toggleTheme}) => {
           </Link>
 
           <ul className="menu small">
-            <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="newsfeed.html" data-title="Newsfeed" style={{position: 'relative'}}>
-                <svg className="menu-item-link-icon icon-newsfeed">
-                  <use xlinkHref="#svg-newsfeed"></use>
-                </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -84, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Newsfeed</p></div></Link>
-            </li>
 
             <li className="menu-item active">
-              <Link className="menu-item-link text-tooltip-tfr" to="overview.html" data-title="Overview" style={{position: 'relative'}}>
+              <Link className="menu-item-link text-tooltip-tfr" to="/" data-title="Overview" style={{position: 'relative'}}>
                 <svg className="menu-item-link-icon icon-overview">
                   <use xlinkHref="#svg-overview"></use>
                 </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -81, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Overview</p></div></Link>
+              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -81, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Tableau de bord</p></div></Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="groups.html" data-title="Groups" style={{position: 'relative'}}>
+              <Link className="menu-item-link text-tooltip-tfr" to="/amis" data-title="Groups" style={{position: 'relative'}}>
                 <svg className="menu-item-link-icon icon-group">
                   <use xlinkHref="#svg-group"></use>
                 </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -71, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Groups</p></div></Link>
+              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -71, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Amis</p></div></Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="members.html" data-title="Members" style={{position: 'relative'}}>
+              <Link className="menu-item-link text-tooltip-tfr" to="/membres" data-title="Members" style={{position: 'relative'}}>
                 <svg className="menu-item-link-icon icon-members">
                   <use xlinkHref="#svg-members"></use>
                 </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -81, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Members</p></div></Link>
+              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -81, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Membres</p></div></Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="badges.html" data-title="Badges" style={{position: 'relative'}}>
+              <Link className="menu-item-link text-tooltip-tfr" to="/badges" data-title="Badges" style={{position: 'relative'}}>
                 <svg className="menu-item-link-icon icon-badges">
                   <use xlinkHref="#svg-badges"></use>
                 </svg>
@@ -134,31 +178,15 @@ const Navbar = ({theme, toggleTheme}) => {
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="quests.html" data-title="Quests" style={{position: 'relative'}}>
+              <Link className="menu-item-link text-tooltip-tfr" to="/quetes" data-title="Quests" style={{position: 'relative'}}>
                 <svg className="menu-item-link-icon icon-quests">
                   <use xlinkHref="#svg-quests"></use>
                 </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -69, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Quests</p></div></Link>
+              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -69, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Quêtes</p></div></Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="streams.html" data-title="Streams" style={{position: 'relative'}}>
-                <svg className="menu-item-link-icon icon-streams">
-                  <use xlinkHref="#svg-streams"></use>
-                </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -75, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Streams</p></div></Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="events.html" data-title="Events" style={{position: 'relative'}}>
-                <svg className="menu-item-link-icon icon-events">
-                  <use xlinkHref="#svg-events"></use>
-                </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -67, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Events</p></div></Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="forums.html" data-title="Forums" style={{position: 'relative'}}>
+              <Link className="menu-item-link text-tooltip-tfr" to="/forums" data-title="Forums" style={{position: 'relative'}}>
                 <svg className="menu-item-link-icon icon-forums">
                   <use xlinkHref="#svg-forums"></use>
                 </svg>
@@ -166,7 +194,7 @@ const Navbar = ({theme, toggleTheme}) => {
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link text-tooltip-tfr" to="marketplace.html" data-title="Marketplace" style={{position: 'relative'}}>
+              <Link className="menu-item-link text-tooltip-tfr" to="/marketplace" data-title="Marketplace" style={{position: 'relative'}}>
                 <svg className="menu-item-link-icon icon-marketplace">
                   <use xlinkHref="#svg-marketplace"></use>
                 </svg>
@@ -175,7 +203,7 @@ const Navbar = ({theme, toggleTheme}) => {
           </ul>
         </nav>
 
-        <nav id="navigation-widget" className={`navigation-widget navigation-widget-desktop sidebar left  ${menu === 'active'? 'delayed': 'hidden'}`} data-simplebar="init" style={{height: 594}}><div className="simplebar-wrapper" style={{margin: '0px 0px -40px'}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: '0px 0px 40px'}}>
+        <nav id="navigation-widget" ref={refmenu} className={`navigation-widget navigation-widget-desktop sidebar left  ${menu === 'active'? 'delayed': 'hidden'}`} data-simplebar="init" style={{height: 594}}><div className="simplebar-wrapper" style={{margin: '0px 0px -40px'}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: '0px 0px 40px'}}>
           <figure className="navigation-widget-cover liquid" style={{background: "url(&quot;https://odindesignthemes.com/vikinger/img/cover/01.jpg&quot;) center center / cover no-repeat"}}>
             <img src="https://odindesignthemes.com/vikinger/img/cover/01.jpg" alt="cover-01" style={{display: menu === 'active'? 'block':'none'}}/>
           </figure>
@@ -193,7 +221,7 @@ const Navbar = ({theme, toggleTheme}) => {
                           </div>
             </Link>
 
-            <p className="user-short-description-title"><Link to="#">Marina Valentine</Link></p>
+            <p className="user-short-description-title"><Link to="#">{user.first_name} {user.last_name}</Link></p>
 
             <p className="user-short-description-text"><Link to="#">www.gamehuntress.com</Link></p>
           </div>
@@ -215,7 +243,7 @@ const Navbar = ({theme, toggleTheme}) => {
               <img src="https://odindesignthemes.com/vikinger/img/badge/warrior-s.png" alt="badge-warrior-s"/>
             </div>
 
-            <Link className="badge-item" to="profile-badges.html">
+            <Link className="badge-item" to="profile-/badges">
               <img src="https://odindesignthemes.com/vikinger/img/badge/blank-s.png" alt="badge-blank-s"/>
               <p className="badge-item-text">+9</p>
             </Link>
@@ -242,44 +270,36 @@ const Navbar = ({theme, toggleTheme}) => {
           </div>
 
           <ul className="menu">
-            <li className="menu-item">
-              <Link className="menu-item-link" to="newsfeed.html">
-                <svg className="menu-item-link-icon icon-newsfeed">
-                  <use xlinkHref="#svg-newsfeed"></use>
-                </svg>
-                Newsfeed
-              </Link>
-            </li>
 
             <li className="menu-item active">
-              <Link className="menu-item-link" to="overview.html">
+              <Link className="menu-item-link" to="/">
                 <svg className="menu-item-link-icon icon-overview">
                   <use xlinkHref="#svg-overview"></use>
                 </svg>
-                Overview
+                Tableau de bord
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="groups.html">
+              <Link className="menu-item-link" to="/amis">
                 <svg className="menu-item-link-icon icon-group">
                   <use xlinkHref="#svg-group"></use>
                 </svg>
-                Groups
+                Amis
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="members.html">
+              <Link className="menu-item-link" to="/membres">
                 <svg className="menu-item-link-icon icon-members">
                   <use xlinkHref="#svg-members"></use>
                 </svg>
-                Members
+                Membres
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="badges.html">
+              <Link className="menu-item-link" to="/badges">
                 <svg className="menu-item-link-icon icon-badges">
                   <use xlinkHref="#svg-badges"></use>
                 </svg>
@@ -288,34 +308,16 @@ const Navbar = ({theme, toggleTheme}) => {
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="quests.html">
+              <Link className="menu-item-link" to="/quetes">
                 <svg className="menu-item-link-icon icon-quests">
                   <use xlinkHref="#svg-quests"></use>
                 </svg>
-                Quests
+                Quêtes
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="streams.html">
-                <svg className="menu-item-link-icon icon-streams">
-                  <use xlinkHref="#svg-streams"></use>
-                </svg>
-                Streams
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="events.html">
-                <svg className="menu-item-link-icon icon-events">
-                  <use xlinkHref="#svg-events"></use>
-                </svg>
-                Events
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="forums.html">
+              <Link className="menu-item-link" to="/forums">
                 <svg className="menu-item-link-icon icon-forums">
                   <use xlinkHref="#svg-forums"></use>
                 </svg>
@@ -324,7 +326,7 @@ const Navbar = ({theme, toggleTheme}) => {
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="marketplace.html">
+              <Link className="menu-item-link" to="/marketplace">
                 <svg className="menu-item-link-icon icon-marketplace">
                   <use xlinkHref="#svg-marketplace"></use>
                 </svg>
@@ -335,7 +337,7 @@ const Navbar = ({theme, toggleTheme}) => {
         </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 1019}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, transform: 'translate3d(0px, 0px, 0px)',display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 346, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div>
         </nav>
 
-        <nav id="navigation-widget-mobile" className={`navigation-widget navigation-widget-mobile sidebar left ${menu === 'active'? '': 'hidden'}`} data-simplebar="init" style={{height: 674}}><div className="simplebar-wrapper" style={{margin: '0px 0px -40px'}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: '0px 0px 40px'}}>
+        <nav id="navigation-widget-mobile" ref={refmenu} className={`navigation-widget navigation-widget-mobile sidebar left ${menu === 'active'? '': 'hidden'}`} data-simplebar="init" style={{height: 674}}><div className="simplebar-wrapper" style={{margin: '0px 0px -40px'}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: '0px 0px 40px'}}>
           <div className="navigation-widget-close-button" onClick={handleMenu}>
             <svg className="navigation-widget-close-button-icon icon-back-arrow">
               <use xlinkHref="#svg-back-arrow"></use>
@@ -347,7 +349,7 @@ const Navbar = ({theme, toggleTheme}) => {
             <Link className="user-avatar small no-outline" to="#">
               <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src="/logo.png" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
                           </div>
       
@@ -356,55 +358,49 @@ const Navbar = ({theme, toggleTheme}) => {
                           </div>
               </Link>
 
-              <p className="navigation-widget-info-title"><Link to="#">Marina Valentine</Link></p>
+              <p className="navigation-widget-info-title"><Link to="#">{user.first_name} {user.last_name}</Link></p>
 
-              <p className="navigation-widget-info-text">Welcome Back!</p>
+              <p className="navigation-widget-info-text">
+              <ProgressBar height={15} width={90} bgColor="#FF864D" completed={level?.details?.progression} />
+              </p>
             </div>
 
-            <p className="navigation-widget-info-button button small secondary" >Logout</p>
+            <p className="navigation-widget-info-button button small secondary" onClick={handlelogout}>Deconnecter</p>
           </div>
 
           <p className="navigation-widget-section-title">Sections</p>
 
           <ul className="menu">
-            <li className="menu-item">
-              <Link className="menu-item-link" to="newsfeed.html">
-                <svg className="menu-item-link-icon icon-newsfeed">
-                  <use xlinkHref="#svg-newsfeed"></use>
-                </svg>
-                Newsfeed
-              </Link>
-            </li>
 
             <li className="menu-item active">
-              <Link className="menu-item-link" to="overview.html">
+              <Link className="menu-item-link" to="/">
                 <svg className="menu-item-link-icon icon-overview">
                   <use xlinkHref="#svg-overview"></use>
                 </svg>
-                Overview
+                Tableau de bord
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="groups.html">
+              <Link className="menu-item-link" to="/amis">
                 <svg className="menu-item-link-icon icon-group">
                   <use xlinkHref="#svg-group"></use>
                 </svg>
-                Groups
+                Amis
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="members.html">
+              <Link className="menu-item-link" to="/membres">
                 <svg className="menu-item-link-icon icon-members">
                   <use xlinkHref="#svg-members"></use>
                 </svg>
-                Members
+                Membres
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="badges.html">
+              <Link className="menu-item-link" to="/badges">
                 <svg className="menu-item-link-icon icon-badges">
                   <use xlinkHref="#svg-badges"></use>
                 </svg>
@@ -413,34 +409,16 @@ const Navbar = ({theme, toggleTheme}) => {
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="quests.html">
+              <Link className="menu-item-link" to="/quetes">
                 <svg className="menu-item-link-icon icon-quests">
                   <use xlinkHref="#svg-quests"></use>
                 </svg>
-                Quests
+                Quêtes
               </Link>
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="streams.html">
-                <svg className="menu-item-link-icon icon-streams">
-                  <use xlinkHref="#svg-streams"></use>
-                </svg>
-                Streams
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="events.html">
-                <svg className="menu-item-link-icon icon-events">
-                  <use xlinkHref="#svg-events"></use>
-                </svg>
-                Events
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="forums.html">
+              <Link className="menu-item-link" to="/forums">
                 <svg className="menu-item-link-icon icon-forums">
                   <use xlinkHref="#svg-forums"></use>
                 </svg>
@@ -449,7 +427,7 @@ const Navbar = ({theme, toggleTheme}) => {
             </li>
 
             <li className="menu-item">
-              <Link className="menu-item-link" to="marketplace.html">
+              <Link className="menu-item-link" to="/marketplace">
                 <svg className="menu-item-link-icon icon-marketplace">
                   <use xlinkHref="#svg-marketplace"></use>
                 </svg>
@@ -511,8 +489,8 @@ const Navbar = ({theme, toggleTheme}) => {
           <Link className="navigation-widget-section-link" to="#">Privacy Policy</Link>
         </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 1976}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, transform: 'translate3d(0px, 0px, 0px)',display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 229, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div></nav>
 
-        <aside id="chat-widget-messages" className={`chat-widget ${chat === 'active'? '': 'closed'} sidebar right`}>
-          <div className="chat-widget-messages" data-simplebar="init" style={{height: menu === 'active'? 427 : 514}}><div className="simplebar-wrapper" style={{margin: 0}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: 0}}>
+        <aside id="chat-widget-messages" ref={refchat} className={`chat-widget ${chat === 'active'? '': 'closed'} sidebar right`}>
+          <div className="chat-widget-messages" data-simplebar="init" style={{height: chat === 'active'? 427 : 514}}><div className="simplebar-wrapper" style={{margin: 0}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: 0}}>
             <div className="chat-widget-message">
               <div className="user-status">
                 <div className="user-status-avatar">
@@ -909,12 +887,12 @@ const Navbar = ({theme, toggleTheme}) => {
               <h1 className="header-brand-text">QuizaPay</h1>
               <div style={{paddingLeft: 20}}>
                 <div style={{padding: '5px 7px',background: 'white',borderRadius: 25}}>
-                    <span style={{fontFamily: 'fantasy',fontSize: 16,color: '#005'}}>500HTG</span>
-                </div>
-                <div className="add_money" style={{position: 'absolute',bottom: 10,left: 135}}>
-                  <div style={{padding: '0px 7px',borderRadius: 20,background: '#ff8612'}}>
+                    <span style={{fontFamily: 'fantasy',fontSize: 14,color: '#005'}}>{Math.round(wallet?.details?.montant)}HTG</span>
+                <Link to="/depot/moncash" style={{position: 'absolute'}}>
+                  <div style={{padding: '1px 5px',borderRadius: 20,background: '#ff8612'}}>
                     <span style={{color: 'white'}}>+</span>
                   </div>
+                </Link>
                 </div>
               </div>
 
@@ -983,7 +961,7 @@ const Navbar = ({theme, toggleTheme}) => {
 
           <div className="header-actions search-bar" style={{position: 'relative'}}>
             <div className="interactive-input dark">
-              <input type="text" id="search-main" name="search_main" placeholder="Search here for people or groups"/>
+              <input type="text" id="search-main" name="search_main" placeholder="Rechercher vos amis ici!"/>
               <div className="interactive-input-icon-wrap">
                 <svg className="interactive-input-icon icon-magnifying-glass">
                   <use xlinkHref="#svg-magnifying-glass"></use>
@@ -1093,7 +1071,7 @@ const Navbar = ({theme, toggleTheme}) => {
               </div>
             
               <div className="dropdown-box-list small no-scroll">
-                <Link className="dropdown-box-list-item" to="marketplace-product.html">
+                <Link className="dropdown-box-list-item" to="#">
                   <div className="user-status no-padding-top">
                     <div className="user-status-avatar">
                       <figure className="picture small round liquid" style={{background: 'url(&quot;https://odindesignthemes.com/vikinger/img/marketplace/items/07.jpg&quot;) center center / cover no-repeat'}}>
@@ -1119,10 +1097,12 @@ const Navbar = ({theme, toggleTheme}) => {
           <div className="header-actions">
             <div className="progress-stat">
               <div className="bar-progress-wrap">
-                <p className="bar-progress-info">Next: <span className="bar-progress-text">38<span className="bar-progress-unit">exp</span></span></p>
+                <p className="bar-progress-info">Prochaine: <span className="bar-progress-text">50<span className="bar-progress-unit">Exp</span></span></p>
               </div>
           
-              <div id="logged-user-level" className="progress-stat-bar" style={{width: 110, height: 4, position: 'relative'}}><canvas width="110" height="4" style={{position: 'absolute', top: 0, left: 0}}></canvas><canvas width="110" height="4" style={{position: 'absolute', top: 0, left: 0}}></canvas></div>
+              <div id="logged-user-level" className="progress-stat-bar" style={{width: 110, height: 4, position: 'relative'}}>
+              <ProgressBar height={15} bgColor="#FF864D" completed={level?.details?.progression} />
+                </div>
             </div>
           </div>
 
@@ -1135,45 +1115,24 @@ const Navbar = ({theme, toggleTheme}) => {
                   </svg>
                 </div>
 
-                <div className="dropdown-box no-padding-bottom header-dropdown" style={{position: 'absolute', zIndex: 9999, top: 64, right: 6, visibility: basket === 'active'? 'visible' : 'hidden', transform: 'translate(0px, 0px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
+                <div className="dropdown-box no-padding-bottom header-dropdown" ref={refbasket} style={{position: 'absolute', zIndex: 9999, top: 64, right: 6, visibility: basket === 'active'? 'visible' : 'hidden', transform: 'translate(0px, 0px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
                   <div className="dropdown-box-header">
-                    <p className="dropdown-box-header-title">Shopping Cart <span className="highlighted">3</span></p>
+                    <p className="dropdown-box-header-title">Panier <span className="highlighted">1</span></p>
                   </div>
               
                   <div className="dropdown-box-list scroll-small no-hover" data-simplebar="init"><div className="simplebar-wrapper" style={{margin: 0}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: 0}}>
-                    <div className="dropdown-box-list-item">
-                      <div className="cart-item-preview">
-                        <Link className="cart-item-preview-image" to="marketplace-product.html">
-                          <figure className="picture medium round liquid" style={{background: 'url(&quot;https://odindesignthemes.com/vikinger/img/marketplace/items/01.jpg&quot;) center center / cover no-repeat'}}>
-                            <img src="https://odindesignthemes.com/vikinger/img/marketplace/items/01.jpg" alt="item-01" style={{display: 'none'}}/>
-                          </figure>
-                        </Link>
-                    
-                        <p className="cart-item-preview-title"><Link to="marketplace-product.html">Twitch Stream UI Pack</Link></p>
-                    
-                        <p className="cart-item-preview-text">Regular License</p>
-                    
-                        <p className="cart-item-preview-price"><span className="highlighted">$</span> 12.00 x 1</p>
-                    
-                        <div className="cart-item-preview-action">
-                          <svg className="icon-delete">
-                            <use xlinkHref="#svg-delete"></use>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
               
                     <div className="dropdown-box-list-item">
                       <div className="cart-item-preview">
-                        <Link className="cart-item-preview-image" to="marketplace-product.html">
-                          <figure className="picture medium round liquid" style={{background: 'url(&quot;https://odindesignthemes.com/vikinger/img/marketplace/items/11.jpg&quot;) center center / cover no-repeat'}}>
-                            <img src="https://odindesignthemes.com/vikinger/img/marketplace/items/11.jpg" alt="item-11" style={{display: 'none'}}/>
+                        <Link className="cart-item-preview-image" to="#">
+                          <figure className="picture medium round liquid" style={{background: 'url("/logo.png") center center / cover no-repeat'}}>
+                            <img src="/logo.png" alt="item-11" style={{display: 'none'}}/>
                           </figure>
                         </Link>
                     
-                        <p className="cart-item-preview-title"><Link to="marketplace-product.html">Gaming Coin Badges Pack</Link></p>
+                        <p className="cart-item-preview-title"><Link to="#">QuizaPay Pro</Link></p>
                     
-                        <p className="cart-item-preview-text">Regular License</p>
+                        <p className="cart-item-preview-text">Version VIP</p>
                     
                         <p className="cart-item-preview-price"><span className="highlighted">$</span> 6.00 x 1</p>
                     
@@ -1184,50 +1143,7 @@ const Navbar = ({theme, toggleTheme}) => {
                         </div>
                       </div>
                     </div>
-              
-                    <div className="dropdown-box-list-item">
-                      <div className="cart-item-preview">
-                        <Link className="cart-item-preview-image" to="marketplace-product.html">
-                          <figure className="picture medium round liquid" style={{background: 'url(&quot;https://odindesignthemes.com/vikinger/img/marketplace/items/10.jpg&quot;) center center / cover no-repeat'}}>
-                            <img src="https://odindesignthemes.com/vikinger/img/marketplace/items/10.jpg" alt="item-10" style={{display: 'none'}}/>
-                          </figure>
-                        </Link>
-                    
-                        <p className="cart-item-preview-title"><Link to="marketplace-product.html">Twitch Stream UI Pack</Link></p>
-                    
-                        <p className="cart-item-preview-text">Regular License</p>
-                    
-                        <p className="cart-item-preview-price"><span className="highlighted">$</span> 26.00 x 1</p>
-                    
-                        <div className="cart-item-preview-action">
-                          <svg className="icon-delete">
-                            <use xlinkHref="#svg-delete"></use>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-              
-                    <div className="dropdown-box-list-item">
-                      <div className="cart-item-preview">
-                        <Link className="cart-item-preview-image" to="marketplace-product.html">
-                          <figure className="picture medium round liquid" style={{background: 'url(&quot;https://odindesignthemes.com/vikinger/img/marketplace/items/04.jpg&quot;) center center / cover no-repeat'}}>
-                            <img src="https://odindesignthemes.com/vikinger/img/marketplace/items/04.jpg" alt="item-04" style={{display: 'none'}}/>
-                          </figure>
-                        </Link>
-                    
-                        <p className="cart-item-preview-title"><Link to="marketplace-product.html">Generic Joystick Pack</Link></p>
-                    
-                        <p className="cart-item-preview-text">Regular License</p>
-                    
-                        <p className="cart-item-preview-price"><span className="highlighted">$</span> 16.00 x 1</p>
-                    
-                        <div className="cart-item-preview-action">
-                          <svg className="icon-delete">
-                            <use xlinkHref="#svg-delete"></use>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
+
                   </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 360}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 227, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div></div>
               
                   <div className="cart-preview-total">
@@ -1238,137 +1154,69 @@ const Navbar = ({theme, toggleTheme}) => {
               
                   <div className="dropdown-box-actions">
                     <div className="dropdown-box-action">
-                      <Link className="button secondary" to="marketplace-cart.html">Shopping Cart</Link>
+                      <Link className="button secondary" to="#">Panier d'achat</Link>
                     </div>
               
                     <div className="dropdown-box-action">
-                      <Link className="button primary" to="marketplace-checkout.html">Go to Checkout</Link>
+                      <Link className="button primary" to="#">Aller à la caisse</Link>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="action-list-item-wrap" style={{position: 'relative'}}>
-                <div className="action-list-item header-dropdown-trigger">
+                <div className={`action-list-item header-dropdown-trigger ${friendrequest === 'active'? 'active': ''}`} onClick={toggleFR}>
                   <svg className="action-list-item-icon icon-friend">
                     <use xlinkHref="#svg-friend"></use>
                   </svg>
                 </div>
 
-                <div className="dropdown-box header-dropdown" style={{position: 'absolute', zIndex: 9999, top: 64, right: 6, opacity: 0, visibility: 'hidden', transform: 'translate(0px, -40px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
+                <div className="dropdown-box header-dropdown" ref={reffriendrequest} style={{position: 'absolute', zIndex: 9999, top: 64, right: 6, opacity: 1, visibility: friendrequest === 'active'? 'visible': 'hidden', transform: 'translate(0px, 0px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
                   <div className="dropdown-box-header">
-                    <p className="dropdown-box-header-title">Friend Requests</p>
+                    <p className="dropdown-box-header-title">Demandes d'ami</p>
               
                     <div className="dropdown-box-header-actions">
-                      <p className="dropdown-box-header-action">Find Friends</p>
+                      <p className="dropdown-box-header-action">Retrouver des amis</p>
                       
-                      <p className="dropdown-box-header-action">Settings</p>
+                      <p className="dropdown-box-header-action">Paramètres</p>
                     </div>
                   </div>
               
                   <div className="dropdown-box-list no-hover" data-simplebar="init"><div className="simplebar-wrapper" style={{margin: 0}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden'}}><div className="simplebar-content" style={{padding: 0}}>
-                    <div className="dropdown-box-list-item">
-                      <div className="user-status request">
-                        
-                        <Link className="user-avatar small no-outline online" to="#">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                        </Link>
-                    
-                        <p className="user-status-title"><Link className="bold" to="#">Ginny Danvers</Link></p>
-                    
-                        <p className="user-status-text">6 friends in common</p>
-                    
-                        <div className="action-request-list">
-                          <div className="action-request accept">
-                            <svg className="action-request-icon icon-add-friend">
-                              <use xlinkHref="#svg-add-friend"></use>
-                            </svg>
-                          </div>
-                    
-                          <div className="action-request decline">
-                            <svg className="action-request-icon icon-remove-friend">
-                              <use xlinkHref="#svg-remove-friend"></use>
-                            </svg>
+                    {friendrequestlist?.list?.map((item)=>
+                      <div className="dropdown-box-list-item" key={item.id}>
+                        <div className="user-status request">
+                          
+                          <Link className="user-status-avatar" to="#">
+                            <div className="user-avatar-content">
+                              <div style={{display: 'flex',justifyContent: 'center'}}>
+                                <img src="/logo.png" style={{width: 40,borderRadius: 10}}/>
+                                </div>
+                            </div>
+        
+                          </Link>
+                      
+                          <p className="user-status-title"><Link className="bold" to="#">{item.from_user_first_name} {item.from_user_last_name}</Link></p>
+                      
+                          <p className="user-status-text">{moment(item.timestamp).calendar()}</p>
+                      
+                          <div className="action-request-list">
+                            <div className="action-request accept">
+                              <svg className="action-request-icon icon-add-friend">
+                                <use xlinkHref="#svg-add-friend"></use>
+                              </svg>
+                            </div>
+                      
+                            <div className="action-request decline">
+                              <svg className="action-request-icon icon-remove-friend">
+                                <use xlinkHref="#svg-remove-friend"></use>
+                              </svg>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
               
-                    <div className="dropdown-box-list-item">
-                      <div className="user-status request">
-                      <Link className="user-avatar small no-outline online" to="#">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                        </Link>
-                    
-                        <p className="user-status-title"><Link className="bold" to="#">Paul Lang</Link></p>
-                    
-                        <p className="user-status-text">2 friends in common</p>
-                    
-                        <div className="action-request-list">
-                          <div className="action-request accept">
-                            <svg className="action-request-icon icon-add-friend">
-                              <use xlinkHref="#svg-add-friend"></use>
-                            </svg>
-                          </div>
-                    
-                          <div className="action-request decline">
-                            <svg className="action-request-icon icon-remove-friend">
-                              <use xlinkHref="#svg-remove-friend"></use>
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-              
-                    <div className="dropdown-box-list-item">
-                      <div className="user-status request">
-                      <Link className="user-avatar small no-outline online" to="#">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                        </Link>
-                    
-                        <p className="user-status-title"><Link className="bold" to="#">Cassie May</Link></p>
-                    
-                        <p className="user-status-text">4 friends in common</p>
-                    
-                        <div className="action-request-list">
-                          <div className="action-request accept">
-                            <svg className="action-request-icon icon-add-friend">
-                              <use xlinkHref="#svg-add-friend"></use>
-                            </svg>
-                          </div>
-                    
-                          <div className="action-request decline">
-                            <svg className="action-request-icon icon-remove-friend">
-                              <use xlinkHref="#svg-remove-friend"></use>
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 228}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{height: 0, display: 'none'}}></div></div></div>
               
                   <Link className="dropdown-box-button secondary" to="hub-profile-requests.html">View all Requests</Link>
@@ -1376,231 +1224,32 @@ const Navbar = ({theme, toggleTheme}) => {
               </div>
 
               <div className="action-list-item-wrap" style={{position: 'relative'}}>
-                <div className="action-list-item header-dropdown-trigger">
+                <Link to="#messages" className="action-list-item header-dropdown-trigger">
                   <svg className="action-list-item-icon icon-messages">
                     <use xlinkHref="#svg-messages"></use>
                   </svg>
-                </div>
-
-                <div className="dropdown-box header-dropdown" style={{position: 'absolute', zIndex: 9999, top: 64, right: 6, opacity: 0, visibility: 'hidden', transform: 'translate(0px, -40px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
-                  <div className="dropdown-box-header">
-                    <p className="dropdown-box-header-title">Messages</p>
-              
-                    <div className="dropdown-box-header-actions">
-                      <p className="dropdown-box-header-action">Mark all as Read</p>
-                      
-                      <p className="dropdown-box-header-action">Settings</p>
-                    </div>
-                  </div>
-              
-                  <div className="dropdown-box-list medium" data-simplebar="init"><div className="simplebar-wrapper" style={{margin: 0}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: 0}}>
-                    <Link className="dropdown-box-list-item" to="hub-profile-messages.html">
-                      <div className="user-status">
-                        <div className="user-status-avatar">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-
-
-                        </div>
-                    
-                        <p className="user-status-title"><span className="bold">Bearded Wonder</span></p>
-                    
-                        <p className="user-status-text">Great! Then will meet with them at the party...</p>
-                    
-                        <p className="user-status-timestamp floaty">29 mins ago</p>
-                      </div>
-                    </Link>
-              
-                    <Link className="dropdown-box-list-item" to="hub-profile-messages.html">
-                      <div className="user-status">
-                        <div className="user-status-avatar">
-                          <div className="user-avatar small no-outline">
-                            <div className="user-avatar-content">
-                              <div style={{display: 'flex',justifyContent: 'center'}}>
-                                <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                                </div>
-                            </div>
-        
-                            <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                              <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                            </div>
-                          </div>
-                        </div>
-              
-                        <p className="user-status-title"><span className="bold">Neko Bebop</span></p>
-              
-                        <p className="user-status-text">Awesome! I'll see you there!</p>
-              
-                        <p className="user-status-timestamp floaty">54 mins ago</p>
-                      </div>
-                    </Link>
-              
-                    <Link className="dropdown-box-list-item" to="hub-profile-messages.html">
-                      <div className="user-status">
-                        <div className="user-status-avatar">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </div>
-              
-                        <p className="user-status-title"><span className="bold">Nick Grissom</span></p>
-              
-                        <p className="user-status-text">Can you stream that new game?</p>
-              
-                        <p className="user-status-timestamp floaty">2 hours ago</p>
-                      </div>
-                    </Link>
-              
-                    <Link className="dropdown-box-list-item" to="hub-profile-messages.html">
-                      <div className="user-status">
-                        <div className="user-status-avatar">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </div>
-              
-                        <p className="user-status-title"><span className="bold">Sarah Diamond</span></p>
-              
-                        <p className="user-status-text">I'm sending you the latest news of the release...</p>
-              
-                        <p className="user-status-timestamp floaty">16 hours ago</p>
-                      </div>
-                    </Link>
-              
-                    <Link className="dropdown-box-list-item" to="hub-profile-messages.html">
-                      <div className="user-status">
-                        <div className="user-status-avatar">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </div>
-              
-                        <p className="user-status-title"><span className="bold">James Murdock</span></p>
-              
-                        <p className="user-status-text">Great! Then will meet with them at the party...</p>
-              
-                        <p className="user-status-timestamp floaty">7 days ago</p>
-                      </div>
-                    </Link>
-              
-                    <Link className="dropdown-box-list-item" to="hub-profile-messages.html">
-                      <div className="user-status">
-                        <div className="user-status-avatar">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </div>
-              
-                        <p className="user-status-title"><span className="bold">The Green Goo</span></p>
-              
-                        <p className="user-status-text">Can you stream that new game?</p>
-              
-                        <p className="user-status-timestamp floaty">10 days ago</p>
-                      </div>
-                    </Link>
-                  </div></div></div></div>
-                  <div className="simplebar-placeholder" style={{width: 'auto', height: 504}}></div>
-                  </div>
-                  <div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}>
-                    <div className="simplebar-scrollbar" style={{width: 0, display: 'none'}}></div>
-                    </div>
-                    <div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}>
-                      <div className="simplebar-scrollbar" style={{height: 350, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}>
-                      </div>
-                      </div>
-                      </div>
-              
-                  <Link className="dropdown-box-button primary" to="hub-profile-messages.html">View all Messages</Link>
-                </div>
+                </Link>
               </div>
 
               <div className="action-list-item-wrap" style={{position: 'relative'}}>
-                <div className="action-list-item unread header-dropdown-trigger">
-                  <svg className="action-list-item-icon icon-notification">
+                <div className="action-list-item unread header-dropdown-trigger"  onClick={toggleNotifi}>
+                  <svg className={`action-list-item-icon icon-notification ${notifi == 'active'? 'active': ''}`}>
                     <use xlinkHref="#svg-notification"></use>
                   </svg>
                 </div>
 
-                <div className="dropdown-box header-dropdown" style={{position: 'absolute', zIndex: 9999, top: 64, right: 6, opacity: 0, visibility: 'hidden', transform: 'translate(0px, -40px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
+                <div className="dropdown-box header-dropdown" ref={refnotifi} style={{position: 'absolute', zIndex: 9999, top: 64, right: 6, opacity: 1, visibility: notifi == 'active'? 'visible':'hidden', transform: 'translate(0px, 0px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
                   <div className="dropdown-box-header">
                     <p className="dropdown-box-header-title">Notifications</p>
               
                     <div className="dropdown-box-header-actions">
-                      <p className="dropdown-box-header-action">Mark all as Read</p>
+                      <p className="dropdown-box-header-action">Tout marquer comme lu</p>
                       
-                      <p className="dropdown-box-header-action">Settings</p>
+                      <p className="dropdown-box-header-action">Paramètres</p>
                     </div>
                   </div>
               
                   <div className="dropdown-box-list" data-simplebar="init"><div className="simplebar-wrapper" style={{margin: 0}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: 0}}>
-                    <div className="dropdown-box-list-item unread">
-                      <div className="user-status notification">
-                        <Link className="user-status-avatar" to="#">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </Link>
-                    
-                        <p className="user-status-title"><Link className="bold" to="#">Nick Grissom</Link> posted a comment on your <Link className="highlighted" to="#">status update</Link></p>
-                    
-                        <p className="user-status-timestamp">2 minutes ago</p>
-                    
-                        <div className="user-status-icon">
-                          <svg className="icon-comment">
-                            <use xlinkHref="#svg-comment"></use>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
               
                     <div className="dropdown-box-list-item">
                       <div className="user-status notification">
@@ -1608,111 +1257,20 @@ const Navbar = ({theme, toggleTheme}) => {
                           <div className="user-avatar small no-outline">
                           <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src="/logo.png" style={{width: 40}}/>
                               </div>
                           </div>
       
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </Link>
-                    
-                        <p className="user-status-title"><Link className="bold" to="#">Sarah Diamond</Link> left a like <img className="reaction" src="https://odindesignthemes.com/vikinger/img/reaction/like.png" alt="reaction-like"/> reaction on your <Link className="highlighted" to="#">status update</Link></p>
-                    
-                        <p className="user-status-timestamp">17 minutes ago</p>
-                    
-                        <div className="user-status-icon">
-                          <svg className="icon-thumbs-up">
-                            <use xlinkHref="#svg-thumbs-up"></use>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-              
-                    <div className="dropdown-box-list-item">
-                      <div className="user-status notification">
-                        <Link className="user-status-avatar" to="#">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
                           </div>
                         </Link>
               
-                        <p className="user-status-title"><Link className="bold" to="#">Destroy Dex</Link> posted a comment on your <Link className="highlighted" to="profile-photos.html">photo</Link></p>
+                        <p className="user-status-title"><Link className="bold" to="#">QuizaPay</Link> vous a laissé une coeur <img className="reaction" src="https://odindesignthemes.com/vikinger/img/reaction/love.png" alt="reaction-love"/> Bienvenue parmi nous <Link className="highlighted" to="#">{user.first_name}</Link></p>
               
-                        <p className="user-status-timestamp">31 minutes ago</p>
+                        <p className="user-status-timestamp">{moment(user.date_joined).calendar()}</p>
               
-                        <div className="user-status-icon">
-                          <svg className="icon-comment">
-                            <use xlinkHref="#svg-comment"></use>
-                          </svg>
-                        </div>
                       </div>
                     </div>
               
-                    <div className="dropdown-box-list-item">
-                      <div className="user-status notification">
-                        <Link className="user-status-avatar" to="#">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </Link>
-              
-                        <p className="user-status-title"><Link className="bold" to="#">The Green Goo</Link> left a love <img className="reaction" src="https://odindesignthemes.com/vikinger/img/reaction/love.png" alt="reaction-love"/> reaction on your <Link className="highlighted" to="#">status update</Link></p>
-              
-                        <p className="user-status-timestamp">2 hours ago</p>
-              
-                        <div className="user-status-icon">
-                          <svg className="icon-thumbs-up">
-                            <use xlinkHref="#svg-thumbs-up"></use>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-              
-                    <div className="dropdown-box-list-item">
-                      <div className="user-status notification">
-                        <Link className="user-status-avatar" to="#">
-                          <div className="user-avatar small no-outline">
-                          <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                          </div>
-                        </Link>
-              
-                        <p className="user-status-title"><Link className="bold" to="#">Neko Bebop</Link> posted a comment on your <Link className="highlighted" to="#">status update</Link></p>
-              
-                        <p className="user-status-timestamp">3 hours ago</p>
-              
-                        <div className="user-status-icon">
-                          <svg className="icon-comment">
-                            <use xlinkHref="#svg-comment"></use>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
                   </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 481}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 366, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div></div>
               
                   <Link className="dropdown-box-button secondary" to="hub-profile-notifications.html">View all Notifications</Link>
@@ -1786,7 +1344,7 @@ const Navbar = ({theme, toggleTheme}) => {
             
                 <Link className="dropdown-navigation-link" to="hub-store-downloads.html">Downloads</Link>
             
-                <p className="dropdown-navigation-button button small secondary" >Logout</p>
+                <p className="dropdown-navigation-button button small secondary" onClick={handlelogout}>Deconnecter</p>
               </div>
             </div>
           </div>
@@ -1805,7 +1363,7 @@ const Navbar = ({theme, toggleTheme}) => {
 
           <div className="bar-actions">
             <div className="action-list dark">
-              <Link className="action-list-item" to="marketplace-cart.html">
+              <Link className="action-list-item" to="#">
                 <svg className="action-list-item-icon icon-shopping-bag">
                   <use xlinkHref="#svg-shopping-bag"></use>
                 </svg>

@@ -4,8 +4,16 @@ import { Link } from 'react-router-dom'
 import { getUser } from '../Common/Auth/Sessions'
 
 
-export const Results = ({ right, nbQuestions, winn, prix }) => {
+export const Results = ({ right, nbQuestions, winn, prix, sauvegarder }) => {
     const user = getUser()
+    const [done, setDone] = useState(false)
+
+    useEffect(()=> {
+        if (done === false) {
+            sauvegarder()
+            setDone(true)
+        }
+    }, [done])
 
     return (
         <>

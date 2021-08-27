@@ -10,7 +10,7 @@ import Fade from '@material-ui/core/Fade';
 // endmodal section
 import { useToasts } from 'react-toast-notifications';
 import axios from 'axios'
-import { getUser, getToken } from '../Components/Common/Auth/Sessions'
+import { getUser, getToken, removeUserSession } from '../Components/Common/Auth/Sessions'
 import useWallets from '../state/wallet/hooks/useWallets';
 import Loading from '../Components/Common/Loading';
 
@@ -56,8 +56,15 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
               request.postPayQ(prix)
               .then((res) => {
                   setIsPay(true)
+                  setWallets()
               })
-              .catch(err => console.log('err.response.data', err.response.data))
+              .catch(err => {
+                if (err.response.status === 401) {
+                  removeUserSession()
+                  window.location.reload()
+              }
+                console.log('err.response.data', err.response.data)
+              })
             } else {
                 insuffisanceSolde()
             }
@@ -145,7 +152,7 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
         
             <p className="badge-item-stat-title">5 Questions</p>
         
-            <p className="badge-item-stat-text">Si vous voulez avoir 5 questions a repondre</p>
+            <p className="badge-item-stat-text">Si vous voulez avoir 5 questions à répondre!</p>
         
               <div style={{paddingTop: 20}}>
                 <p onClick={pay35} className="button secondary full">
@@ -168,7 +175,7 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
         
             <p className="badge-item-stat-title">7 Questions</p>
         
-            <p className="badge-item-stat-text">Si vous voulez avoir 7 questions a repondre</p>
+            <p className="badge-item-stat-text">Si vous voulez avoir 7 questions à répondre!</p>
         
               <div style={{paddingTop: 20}}>
                 <p onClick={pay50} className="button secondary full">
@@ -191,7 +198,7 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
         
             <p className="badge-item-stat-title">10 Questions</p>
         
-            <p className="badge-item-stat-text">Si vous voulez avoir 10 questions a repondre</p>
+            <p className="badge-item-stat-text">Si vous voulez avoir 10 questions à répondre!</p>
         
               <div style={{paddingTop: 20}}>
                 <p onClick={pay75} className="button secondary full">

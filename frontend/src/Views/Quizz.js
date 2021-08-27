@@ -12,6 +12,8 @@ import useSound from 'use-sound';
 import { useToasts } from 'react-toast-notifications';
 import addNotification from 'react-push-notification';
 import BeforeUnloadComponent from 'react-beforeunload-component';
+import useWallets from '../state/wallet/hooks/useWallets';
+import useLevels from '../state/level/hooks/useLevels';
 
 const Quizz = ({questions, nbQuestions, prixQ}) => {
     const token = getToken()
@@ -20,15 +22,21 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
     const [all, setAll] = useState()
     const [quizId, setQuizId] = useState()
     const [allQN, setAllQN] = useState(1)
-    const [rep, setRep] = useState()
     const [timeactive, setTimeactive] = useState(true)
     const [end, setEnd] = useState(false)
     const [startTimer, setStartTimer] = useState(false)
     const { addToast } = useToasts()
     const [timeout, setTimeOutState] = useState(false)
 
+    const winn = Math.round((right) * (100) / nbQuestions)
+
     const Preduce = prixQ / nbQuestions
     const som = Preduce * right * 2
+
+    const progression = winn <= 20? 10 : winn <= 50? 25 : winn <= 100? 50 : 10
+
+    const [wallet, isLoading, setWallets] = useWallets();
+    const [level, isLoadinglevel, setLevels] = useLevels();
 
         
     useEffect(() => {
@@ -38,8 +46,13 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
     })
 
     const sauvegarder = () => {
-        request.postResults(right, nbQuestions, quizId, som, prixQ)
         request.postWinPay(prixQ, nbQuestions, right)
+        request.postResults(right, nbQuestions, quizId, prixQ)
+        request.postProgress(progression)
+        setWallets() 
+        setTimeout(() => { 
+            setLevels()
+        }, 700);
     }
 
     const restartTime = () => {
@@ -51,31 +64,20 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
     }
     const timeActive = () => {
         setTimeactive(true)
-        setRep(undefined)
     }
 
     const handleGameOver = (all) => {
         setEnd(true)
         setAll(all + 1)
-        sauvegarder()
     }
 
     const handleCorrect = () => {
         setRight(right + 1)
-        setRep(true)
-    }
-
-    const handleWrong = () => {
-        setRep(false)
     }
 
     const handleAllQN = () => {
-        if (end == false) {
-            setAllQN(allQN + 1)
-        }
+        setAllQN(allQN + 1)
     }
-
-    const winn = Math.round((right) * (100) / nbQuestions)
 
     if (questions.length !== 0) {
         return (
@@ -150,9 +152,9 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
                             ignoreBefoureunloadDocument={true}
                             alertMessage={"Êtes-vous sûr de vouloir quitter? Les modifications ne seront pas enregistrées."}
                         >
-                            <TheGame setTimeOutState={setTimeOutState} timeout={timeout} end={end} handleCorrect={handleCorrect} handleGameOver={handleGameOver} getTime={restartTime} timeActiveBtn={timeActive} timeDesactive={timeDesactive} handleWrong={handleWrong} questions={questions} nbQuestions={nbQuestions} timeactive={timeactive} rep={rep} setStartTimer={setStartTimer} right={right} handleAllQN={handleAllQN}/>
+                            <TheGame setTimeOutState={setTimeOutState} timeout={timeout} end={end} handleCorrect={handleCorrect} handleGameOver={handleGameOver} getTime={restartTime} timeActiveBtn={timeActive} timeDesactive={timeDesactive} questions={questions} nbQuestions={nbQuestions} timeactive={timeactive} setStartTimer={setStartTimer} right={right} handleAllQN={handleAllQN}/>
                         </BeforeUnloadComponent>
-                        :   <Results nbQuestions={nbQuestions} right={right} all={all} winn={winn} prix={som}/>
+                        :   <Results nbQuestions={nbQuestions} right={right} all={all} winn={winn} prix={som} sauvegarder={sauvegarder}/>
                     }
                     </div>
                 </div>

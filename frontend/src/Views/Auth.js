@@ -12,9 +12,7 @@ const Auth = () => {
 
             <div className="landing-info">
             <div className="logo">
-                <svg className="icon-logo-vikinger">
-                <use xlinkHref="#svg-logo-vikinger"></use>
-                </svg>
+                <img src="/logo.png" alt="QuizaPay"  style={{width: 'auto', height: 70}}/> 
             </div>
 
             <h2 className="landing-info-pretitle">Bienvenue à</h2>

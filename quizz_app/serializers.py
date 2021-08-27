@@ -3,8 +3,10 @@ from quizz_app.models import *
 from django.contrib.auth import authenticate, login
 
 class DemandeSerializer(serializers.ModelSerializer):
-    from_user_name = serializers.CharField(source='from_user.phone')
-    to_user_name = serializers.CharField(source='to_user.phone')
+    from_user_first_name = serializers.CharField(source='from_user.first_name')
+    from_user_last_name = serializers.CharField(source='from_user.last_name')
+    from_user_level = serializers.CharField(source='from_user.level')
+    to_user_name = serializers.CharField(source='to_user.first_name')
     class Meta:
         model = FriendRequest
         fields = '__all__'
@@ -40,7 +42,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PlayerSerializer(serializers.ModelSerializer):
-    player_name = serializers.CharField(source='user.phone')
+    player_name = serializers.CharField(source='user.first_name')
     player_avatar = serializers.ImageField(source='user.profile.photo')
     class Meta:
         model = Player
@@ -70,6 +72,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ResultSerializer(serializers.ModelSerializer):
+    quizz_name = serializers.CharField(source='quizz_id.name')
     class Meta:
         model = results
         ordering = ('-created_at', )
@@ -80,6 +83,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta: 
         model = User
         fields = '__all__'
+
+class LevelSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = User
+        fields = ['progression', 'experience', 'level',]
 
 
 class RegisterSerializer(serializers.ModelSerializer):

@@ -48,7 +48,7 @@ class User(AbstractUser):
     whatsapp = models.CharField(max_length=250, help_text="example: +50943208550", null=True, blank=True)
     instagram = models.CharField(max_length=250, help_text="example: https://instagram.com/{username}/", null=True, blank=True)
     level = models.IntegerField(default=1, null=False)
-    experience = models.IntegerField(default=2, null=False)
+    experience = models.IntegerField(default=25, null=False)
     progression = models.IntegerField(default=0, null=False)
     photo = models.ImageField(default='photo.jpg', upload_to='users_pics/', null=True, blank=True)
     friends = models.ManyToManyField("User",blank=True)

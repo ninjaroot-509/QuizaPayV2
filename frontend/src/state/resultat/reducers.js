@@ -1,4 +1,4 @@
-const LIST_RESULTAT = 'wallet/LIST_RESULTAT';
+const LIST_RESULTAT = 'resultat/LIST_RESULTAT';
 
 export const INITIAL_STATE = {
   list: null,

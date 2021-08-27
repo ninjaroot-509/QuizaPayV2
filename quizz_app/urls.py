@@ -9,6 +9,7 @@ router.register('category', CategoryViewSet, 'category' )
 router.register('quizzes', quizzViewSet, 'quizzes' )
 
 urlpatterns = [
+    url(r'^user-details/$', UserDetailsView.as_view()),
     url(r'^info-user/$', PostInfoView.as_view()),
     url(r'^users/$', UserListView.as_view()),
     url(r'^friends/$', FriendListView.as_view()),

@@ -284,7 +284,7 @@ textarea::placeholder {
 
 .form-input.currency-decorated:before {
     content: "$";
-    color: #00c7d9;
+    color: #ff9612;
     font-size: .875rem;
     font-weight: 700;
     position: absolute;
@@ -437,7 +437,7 @@ textarea::placeholder {
 }
 
 .checkbox-line .checkbox-line-text {
-    color: #00c7d9;
+    color: #ff9612;
     font-size: .875rem;
     font-weight: 500
 }
@@ -769,7 +769,7 @@ textarea::placeholder {
 
 .form-counter.with-currency:before {
     content: "$";
-    color: #00c7d9;
+    color: #ff9612;
     font-family: Rajdhani, sans-serif;
     font-size: .875rem;
     font-weight: 700;
@@ -1449,7 +1449,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p a {
-    color: #00c7d9;
+    color: #ff9612;
     font-weight: 600
 }
 
@@ -1466,7 +1466,7 @@ p .reaction:first-child {
 }
 
 a:hover {
-    color: #00c7d9;
+    color: #ff9612;
     text-decoration: none
 }
 
@@ -2347,7 +2347,7 @@ figure>img {
 }
 
 .user-short-description .user-short-description-text a:hover {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .user-short-description .user-short-description-text.regular {
@@ -2476,12 +2476,12 @@ figure>img {
 }
 
 .text-sticker .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .text-sticker .text-sticker-icon {
     margin-right: 4px;
-    fill: #00c7d9
+    fill: #ff9612
 }
 
 .text-sticker.small-text {
@@ -2577,7 +2577,7 @@ figure>img {
 
 .simple-dropdown .simple-dropdown-link:hover {
     padding-left: 20px;
-    color: #00c7d9
+    color: #ff9612
 }
 
 .simple-dropdown .simple-dropdown-text {
@@ -2919,7 +2919,7 @@ figure>img {
 }
 
 .tweet .tweet-text .highlighted {
-    color: #00c7d9;
+    color: #ff9612;
     font-weight: 600
 }
 
@@ -3191,7 +3191,7 @@ figure>img {
 }
 
 .meta-line .meta-line-link:hover {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .meta-line .meta-line-timestamp {
@@ -3801,7 +3801,7 @@ figure>img {
 }
 
 .week-box-item.active .week-box-item-title {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .week-box-item.active .week-box-item-text {
@@ -3868,7 +3868,7 @@ figure>img {
 }
 
 .forum-category .forum-category-info .forum-category-link a:hover {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .discussion-preview.pinned .discussion-preview-title {
@@ -3925,7 +3925,7 @@ figure>img {
 }
 
 .discussion-preview .discussion-preview-meta .discussion-preview-meta-text a.highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .discussion-preview .discussion-preview-meta .discussion-preview-meta-text .separator {
@@ -4924,7 +4924,7 @@ figure>img {
 }
 
 .sidebar-menu-body .sidebar-menu-link.active, .sidebar-menu-body .sidebar-menu-link:hover {
-    color: #00c7d9;
+    color: #ff9612;
     -webkit-transform: translate(4px);
     transform: translate(4px)
 }
@@ -4940,7 +4940,7 @@ figure>img {
 }
 
 .price-title .currency {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .price-title.big {
@@ -5029,7 +5029,7 @@ figure>img {
 }
 
 .tab-box .tab-box-option .tab-box-option-title .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .tab-box .tab-box-option.active {
@@ -6648,7 +6648,7 @@ figure>img {
 }
 
 .table .table-column .table-title .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .table .table-column .table-text {
@@ -6669,7 +6669,7 @@ figure>img {
 }
 
 .table .table-column .table-link .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .table .table-column .table-link+.table-link {
@@ -6897,7 +6897,7 @@ figure>img {
 }
 
 .widget-box .widget-box-title .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .widget-box .widget-box-text {
@@ -8077,7 +8077,7 @@ figure>img {
 }
 
 .user-status .user-status-title .highlighted {
-    color: #00c7d9;
+    color: #ff9612;
     font-weight: 600
 }
 
@@ -8192,7 +8192,7 @@ figure>img {
 }
 
 .cart-item-preview .cart-item-preview-price .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .cart-item-preview .cart-item-preview-action {
@@ -8231,7 +8231,7 @@ figure>img {
 }
 
 .cart-preview-total .cart-preview-total-text .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .form-box {
@@ -8279,7 +8279,7 @@ figure>img {
 .landing {
     width: 100%;
     height: 100%;
-    background: url(https://odindesignthemes.com/vikinger/img/landing/landing-background.jpg) no-repeat 0;
+    background: blue;
     background-size: cover;
     position: fixed;
     top: 0;
@@ -8487,7 +8487,7 @@ figure>img {
 }
 
 .dropdown-box .dropdown-box-header .dropdown-box-header-title .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .dropdown-box .dropdown-box-header .dropdown-box-header-actions {
@@ -8507,7 +8507,7 @@ figure>img {
 }
 
 .dropdown-box .dropdown-box-header .dropdown-box-header-actions .dropdown-box-header-action:hover {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .dropdown-box .dropdown-box-header .dropdown-box-header-actions .dropdown-box-header-action:last-child {
@@ -8667,7 +8667,7 @@ figure>img {
 
 .dropdown-navigation .dropdown-navigation-link .highlighted {
     float: right;
-    color: #00c7d9
+    color: #ff9612
 }
 
 .dropdown-navigation .dropdown-navigation-link:hover {
@@ -8783,7 +8783,7 @@ figure>img {
 
 .navigation-widget .navigation-widget-section-link .highlighted {
     float: right;
-    color: #00c7d9
+    color: #ff9612
 }
 
 .navigation-widget .navigation-widget-section-link:hover {
@@ -9569,7 +9569,7 @@ figure>img {
 }
 
 .post-comment .post-comment-text .highlighted {
-    color: #00c7d9;
+    color: #ff9612;
     font-weight: 700
 }
 
@@ -9626,7 +9626,7 @@ figure>img {
 }
 
 .post-comment-heading .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .post-comment-form {
@@ -10508,7 +10508,7 @@ figure>img {
 }
 
 .video-status .video-status-info .video-status-title .highlighted {
-    color: #00c7d9;
+    color: #ff9612;
     font-weight: 700
 }
 
@@ -12559,7 +12559,7 @@ figure>img {
 }
 
 .forum-post .forum-post-action:hover {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .forum-post .forum-post-action.light {
@@ -12624,7 +12624,7 @@ figure>img {
 }
 
 .forum-post .forum-post-user .forum-post-user-text a:hover {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .forum-post .forum-post-user .forum-post-user-tag {
@@ -13568,7 +13568,7 @@ figure>img {
 }
 
 .section-header-info .section-title .highlighted {
-    color: #00c7d9
+    color: #ff9612
 }
 
 .section-header-info .section-title .highlighted.secondary {
@@ -13778,7 +13778,7 @@ figure>img {
 }
 
 .section-filters-bar .section-filters-bar-text .highlighted {
-    color: #00c7d9;
+    color: #ff9612;
     font-weight: 700;
     margin: 0 4px
 }
@@ -13883,7 +13883,7 @@ figure>img {
 
 .section-pager .section-pager-item.active .section-pager-item-text, .section-pager .section-pager-item:hover .section-pager-item-text {
     background-color: #fff;
-    color: #00c7d9;
+    color: #ff9612;
     box-shadow: 3px 5px 20px 0 rgba(94, 92, 154, .12)
 }
 
@@ -14173,3 +14173,4 @@ figure>img {
     width: 100%;
     height: auto;
 }
+

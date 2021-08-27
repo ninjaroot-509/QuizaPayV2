@@ -104,11 +104,13 @@ admin.site.register(questions, QuestionAdmin)
 class ResultAdmin(admin.ModelAdmin):
     list_display = [
         'player',
+        'gain',
         'quizz_id',
         'score',
-        'total'
+        'total', 
+        'created_at'
     ]
-    list_filter = ['quizz_id', 'player']
+    list_filter = ['quizz_id', 'player', 'created_at']
     search_fields = ['quizz_id', 'player']
 admin.site.register(results, ResultAdmin)
 
