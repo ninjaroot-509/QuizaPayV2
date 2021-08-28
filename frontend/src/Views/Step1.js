@@ -5,7 +5,7 @@ const Step1 = () => {
     return (
   <div className="content-grid">
     <div className="section-banner">
-      <img className="section-banner-icon" src="https://odindesignthemes.com/vikinger/img/banner/badges-icon.png" alt="badges-icon"/>
+      <img className="section-banner-icon" src="http://localhost:3000/static/assets/img/banner/badges-icon.png" alt="badges-icon"/>
   
       <p className="section-banner-title">Methode de jeu</p>
   
@@ -15,7 +15,7 @@ const Step1 = () => {
     <div className="grid grid-3-3-3-3 top-space centered">
 
       <div className="badge-item-stat"> 
-        <img className="badge-item-stat-image" src="https://odindesignthemes.com/vikinger/img/badge/bronze-b.png" alt="badge-bronze-b"/>
+        <img className="badge-item-stat-image" src="http://localhost:3000/static/assets/img/badge/bronze-b.png" alt="badge-bronze-b"/>
     
         <p className="badge-item-stat-title">QuizaPay solo</p>
     
@@ -32,7 +32,7 @@ const Step1 = () => {
       </div>
 
       <div className="badge-item-stat"> 
-        <img className="badge-item-stat-image" src="https://odindesignthemes.com/vikinger/img/badge/gold-b.png" alt="badge-gold-b"/>
+        <img className="badge-item-stat-image" src="http://localhost:3000/static/assets/img/badge/gold-b.png" alt="badge-gold-b"/>
     
         <p className="badge-item-stat-title">QuizaPay friendly</p>
     
@@ -49,7 +49,7 @@ const Step1 = () => {
       </div>
 
       <div className="badge-item-stat"> 
-        <img className="badge-item-stat-image" src="https://odindesignthemes.com/vikinger/img/badge/silver-b.png" alt="badge-silver-b"/>
+        <img className="badge-item-stat-image" src="http://localhost:3000/static/assets/img/badge/silver-b.png" alt="badge-silver-b"/>
     
         <p className="badge-item-stat-title">QuizaPay collectives</p>
     

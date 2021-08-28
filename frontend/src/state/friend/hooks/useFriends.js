@@ -2,33 +2,33 @@ import { useState } from 'react';
 import { useStateValue } from '../../index';
 import httpRequest from '../../../Components/Common/HttpRequests';
 
-const SET_WALLET = 'wallet/SET_WALLET';
+const LIST_FRIEND = 'friend/LIST_FRIEND';
 
-const useZones = () => {
-  const [{ wallet }, dispatch] = useStateValue();
+const useFriends = () => {
+  const [{ friend }, dispatch] = useStateValue();
   const [isLoading, setIsLoading] = useState(false);
 
   const request = async () => {
     setIsLoading(true);
 
-    const response = await httpRequest.getWallet();
+    const response = await httpRequest.getFriendList();
 
     if (response) {
       dispatch({
-        type: SET_WALLET,
+        type: LIST_FRIEND,
         payload: response,
       });
     } else {
       const err = [];
       dispatch({
-        type: SET_WALLET,
+        type: LIST_FRIEND,
         payload: err,
       });
     }
     setIsLoading(false);
   };
 
-  return [wallet, isLoading, request];
+  return [friend, isLoading, request];
 };
 
-export default useZones;
+export default useFriends;

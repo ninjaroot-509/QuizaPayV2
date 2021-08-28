@@ -1,15 +1,15 @@
-const SET_WALLET = 'wallet/SET_WALLET';
+const LIST_FRIEND = 'friend/LIST_FRIEND';
 
 export const INITIAL_STATE = {
-  details: null,
+  list: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SET_WALLET:
+    case LIST_FRIEND:
       return {
         ...state,
-        details: action.payload,
+        list: action.payload,
       };
     default:
       return state;

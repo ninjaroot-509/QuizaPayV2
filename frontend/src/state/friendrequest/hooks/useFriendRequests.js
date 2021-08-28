@@ -11,7 +11,7 @@ const useFriendRequests = () => {
   const request = async () => {
     setIsLoading(true);
 
-    const response = await httpRequest.getFriendRequest();
+    const response = await httpRequest.getDemandeRecuList();
 
     if (response) {
       dispatch({

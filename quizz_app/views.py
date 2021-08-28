@@ -47,13 +47,13 @@ class UserListView(APIView):
             key = token[1].lower()[0:8]
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             # tokenview = AuthToken.objects.get(token_key=key).user
-            user = User.objects.get(pk=tokenview)
-            user_list = User.objects.all().exclude(pk=user.id) 
-            for f in user_list:
-                if f in user.friends.all():
-                    user_list = user_list.exclude(id=f.id)
-            serializer = UserSerializer(user_list, many=True)
-            return JsonResponse(serializer.data, safe=False)
+            user = User.objects.get(pk=tokenview).exclude(user=user) 
+        user_list = User.objects.all()
+        for f in user_list:
+            if f in user.friends.all():
+                user_list = user_list.exclude(id=f.id)
+        serializer = UserSerializer(user_list, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 class FriendListView(APIView):
     def get(self, request, format=None):
@@ -132,8 +132,8 @@ class RequestFriendView(APIView):
                 frequest = FriendRequest.objects.filter(to_user=user, from_user=from_user).first()
                 user1 = frequest.to_user
                 user2 = from_user
-                user1.profile.friends.add(user2.profile)
-                user2.profile.friends.add(user1.profile)
+                user1.friends.add(user2)
+                user2.friends.add(user1)
                 frequest.delete()
                 return JsonResponse({'status': 1, 'message': 'request successfully!'})
             return JsonResponse({'status': 0, 'message': 'errrorrr!'})

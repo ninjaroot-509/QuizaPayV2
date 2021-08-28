@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import *
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 class FriendRequestAdmin(admin.ModelAdmin):
     list_display = [
@@ -63,7 +65,7 @@ class PlayerAdmin(admin.ModelAdmin):
 admin.site.register(Player, PlayerAdmin)
 
 
-class QuizAdmin(admin.ModelAdmin):
+class QuizAdmin(ImportExportModelAdmin):
     list_editable = ['is_live',]
     list_display = ['name', 'get_count', 'category', 'created_at', 'is_live']
 
@@ -81,7 +83,7 @@ class QuizAdmin(admin.ModelAdmin):
     ]
 admin.site.register(quizzes, QuizAdmin)
 
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ImportExportModelAdmin):
     list_display = [
         'title',
         'is_active'
@@ -92,7 +94,7 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 admin.site.register(Category, CategoryAdmin)
 
-class QuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(ImportExportModelAdmin):
     list_display = [
         'quizz_id',
         'question',

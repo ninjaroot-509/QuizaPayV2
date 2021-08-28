@@ -22,7 +22,7 @@ const LoginView = ({login}) => {
 
         if (phone && password) {
             setLoad(true)
-            request.postLogin(phone, password)
+            request.postLogin('+'+phone, password)
             .then(res => { 
                 setUserSession(res.data.token, res.data.user);       // LOGIN OK redirect 
                 addNotification({
@@ -50,7 +50,7 @@ const LoginView = ({login}) => {
     }
     return (
         <div className="form-box login-register-form-element"  style={{display: login == true ? 'block' : 'none' }}>
-            <img className="form-box-decoration overflowing" src="https://odindesignthemes.com/vikinger/img/landing/rocket.png" alt="rocket"/>
+            <img className="form-box-decoration overflowing" src="http://localhost:3000/static/assets/img/landing/rocket.png" alt="rocket"/>
 
             <h2 className="form-box-title">Connexion au compte</h2>
         

@@ -2,33 +2,33 @@ import { useState } from 'react';
 import { useStateValue } from '../../index';
 import httpRequest from '../../../Components/Common/HttpRequests';
 
-const SET_WALLET = 'wallet/SET_WALLET';
+const LIST_USER = 'userlist/LIST_USER';
 
-const useZones = () => {
-  const [{ wallet }, dispatch] = useStateValue();
+const useUsers = () => {
+  const [{ userlist }, dispatch] = useStateValue();
   const [isLoading, setIsLoading] = useState(false);
 
   const request = async () => {
     setIsLoading(true);
 
-    const response = await httpRequest.getWallet();
+    const response = await httpRequest.getUserList();
 
     if (response) {
       dispatch({
-        type: SET_WALLET,
+        type: LIST_USER,
         payload: response,
       });
     } else {
       const err = [];
       dispatch({
-        type: SET_WALLET,
+        type: LIST_USER,
         payload: err,
       });
     }
     setIsLoading(false);
   };
 
-  return [wallet, isLoading, request];
+  return [userlist, isLoading, request];
 };
 
-export default useZones;
+export default useUsers;

@@ -25,11 +25,11 @@ const CompleteI = () => {
                 addNotification({
                     title: 'Warning',
                     subtitle: 'QuizaPay!',
-                    message: "Bienvenue " + '' + res.data.last_name,
+                    message: "Bienvenue " + '' + res.data.first_name,
                     theme: 'darkblue',
                     native: true // when using native, your OS will handle theming.
                 })
-                addToast("Bienvenue " + '' + res.data.last_name, {appearance: 'success', autoDismiss: true})
+                addToast("Bienvenue " + '' + res.data.first_name, {appearance: 'success', autoDismiss: true})
                 window.location.reload()
                 setLoad(false)
                 }).catch(err => {
@@ -47,8 +47,8 @@ const CompleteI = () => {
     if (getToken() && getUser().is_complete === false) {
         return ( 
             <div>
-            <div className="landing-form">
-                <div className="form-box" style={{marginTop: 85}}>
+            <div style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}>
+                <div className="form-box" style={{marginTop: 95}}>
                     <h2 className="form-box-title">Infos personnel</h2>
                 
                     <form className="form" onSubmit={handleLoginSubmit}>

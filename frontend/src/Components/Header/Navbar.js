@@ -7,6 +7,8 @@ import useWallets from '../../state/wallet/hooks/useWallets';
 import ProgressBar from "@ramonak/react-progress-bar";
 import useLevels from '../../state/level/hooks/useLevels';
 import useFriendRequests from '../../state/friendrequest/hooks/useFriendRequests';
+import useFriends from '../../state/friend/hooks/useFriends';
+import useUsers from '../../state/userlist/hooks/useUsers';
 import moment from 'moment';
 
 const Navbar = ({theme, toggleTheme}) => {
@@ -19,12 +21,29 @@ const Navbar = ({theme, toggleTheme}) => {
   const [level, isLoadinglevel, setLevels] = useLevels();
     const [wallet, isLoading, setWallets] = useWallets();
     const [friendrequestlist, isLoadingfr, setFriendRequests] = useFriendRequests();
+    const [friend, isLoadingf, setFriends] = useFriends();
+    const [userlist, isLoadingU, setUserLists] = useUsers();
     const [menu, setMenu] = useState('')
     const [search, setSearch] = useState('')
     const [basket, setBasket] = useState('')
     const [chat, setChat] = useState('')
     const [friendrequest, setFriendRequest] = useState('')
     const [notifi, setNotifi] = useState('')
+
+    const lowercasedFilter = search.toLowerCase();
+    const filteredData = userlist?.list?.filter(item => {
+      // return Object.keys(item).some(key =>
+      //   item[key].toLowerCase().search(lowercasedFilter)
+      // );
+      return item.first_name.toLowerCase().search(lowercasedFilter)
+    });
+    const [temp, setTemp] = useState(0)
+
+    useEffect(()=>{
+        setInterval(()=>{
+            setTemp((prevTemp)=>prevTemp+1)
+        }, 9000)
+    }, [])
 
     const handleMenu = () => {
       if (menu === 'active') {
@@ -34,12 +53,8 @@ const Navbar = ({theme, toggleTheme}) => {
       }
   };
 
-  const toggleSearch = () => {
-      if (search === 'active') {
-          setSearch('')
-      } else {
-          setSearch('active')
-      }
+  const handleSearch = event => {
+    setSearch(event.target.value);
   };
 
   const toggleBasket = () => {
@@ -100,6 +115,23 @@ const toggleNotifi = () => {
     window.location.reload()
   }
 
+  const acceptFriend = (id) => {
+        request.postAcceptFriend(id).then(res => {
+            setTimeout(() => {
+              setFriendRequests()
+              setFriends()
+            }, 100);
+        })
+  }
+
+  const addFriend = (id) => {
+      request.postAddFriend(id).then(res => {
+          setTimeout(() => {
+            setUserLists()
+          }, 100);
+      })
+  }
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -123,7 +155,19 @@ const toggleNotifi = () => {
       if (!friendrequestlist.list || friendrequestlist.list.length === 0) {
         setFriendRequests();
       }
-    }, [friendrequestlist, setFriendRequests]);
+    }, [temp]);
+
+    useEffect(() => {
+      if (!friend.list || friend.list.length === 0) {
+        setFriends();
+      }
+    }, [temp]);
+
+    useEffect(() => {
+      if (!userlist.list || userlist.list.length === 0) {
+        setUserLists();
+      }
+    }, [temp]);
 
     const user = getUser()
 
@@ -134,7 +178,7 @@ const toggleNotifi = () => {
           <Link className="user-avatar small no-outline online" to="#">
           <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
                           </div>
       
@@ -158,7 +202,7 @@ const toggleNotifi = () => {
                 <svg className="menu-item-link-icon icon-group">
                   <use xlinkHref="#svg-group"></use>
                 </svg>
-              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -71, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Amis</p></div></Link>
+              <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -71, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Mes amis</p></div></Link>
             </li>
 
             <li className="menu-item">
@@ -201,140 +245,6 @@ const toggleNotifi = () => {
               <div className="xm-tooltip" style={{whiteSpace: 'nowrap', position: 'absolute', zIndex: 99999, right: -97, top: '50%', marginTop: -12, opacity: 0, visibility: 'hidden', transform: 'translate(10px, 0px)', transition: 'all 0.3s ease-in-out 0s'}}><p className="xm-tooltip-text">Marketplace</p></div></Link>
             </li>
           </ul>
-        </nav>
-
-        <nav id="navigation-widget" ref={refmenu} className={`navigation-widget navigation-widget-desktop sidebar left  ${menu === 'active'? 'delayed': 'hidden'}`} data-simplebar="init" style={{height: 594}}><div className="simplebar-wrapper" style={{margin: '0px 0px -40px'}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: '0px 0px 40px'}}>
-          <figure className="navigation-widget-cover liquid" style={{background: "url(&quot;https://odindesignthemes.com/vikinger/img/cover/01.jpg&quot;) center center / cover no-repeat"}}>
-            <img src="https://odindesignthemes.com/vikinger/img/cover/01.jpg" alt="cover-01" style={{display: menu === 'active'? 'block':'none'}}/>
-          </figure>
-
-          <div className="user-short-description">
-            <Link className="user-short-description-avatar user-avatar medium" to="#">
-              <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-            </Link>
-
-            <p className="user-short-description-title"><Link to="#">{user.first_name} {user.last_name}</Link></p>
-
-            <p className="user-short-description-text"><Link to="#">www.gamehuntress.com</Link></p>
-          </div>
-
-          <div className="badge-list small">
-            <div className="badge-item">
-              <img src="https://odindesignthemes.com/vikinger/img/badge/gold-s.png" alt="badge-gold-s"/>
-            </div>
-
-            <div className="badge-item">
-              <img src="https://odindesignthemes.com/vikinger/img/badge/age-s.png" alt="badge-age-s"/>
-            </div>
-
-            <div className="badge-item">
-              <img src="https://odindesignthemes.com/vikinger/img/badge/caffeinated-s.png" alt="badge-caffeinated-s"/>
-            </div>
-
-            <div className="badge-item">
-              <img src="https://odindesignthemes.com/vikinger/img/badge/warrior-s.png" alt="badge-warrior-s"/>
-            </div>
-
-            <Link className="badge-item" to="profile-/badges">
-              <img src="https://odindesignthemes.com/vikinger/img/badge/blank-s.png" alt="badge-blank-s"/>
-              <p className="badge-item-text">+9</p>
-            </Link>
-          </div>
-
-          <div className="user-stats">
-            <div className="user-stat">
-              <p className="user-stat-title">930</p>
-
-              <p className="user-stat-text">posts</p>
-            </div>
-
-            <div className="user-stat">
-              <p className="user-stat-title">82</p>
-
-              <p className="user-stat-text">friends</p>
-            </div>
-
-            <div className="user-stat">
-              <p className="user-stat-title">5.7k</p>
-
-              <p className="user-stat-text">visits</p>
-            </div>
-          </div>
-
-          <ul className="menu">
-
-            <li className="menu-item active">
-              <Link className="menu-item-link" to="/">
-                <svg className="menu-item-link-icon icon-overview">
-                  <use xlinkHref="#svg-overview"></use>
-                </svg>
-                Tableau de bord
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="/amis">
-                <svg className="menu-item-link-icon icon-group">
-                  <use xlinkHref="#svg-group"></use>
-                </svg>
-                Amis
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="/membres">
-                <svg className="menu-item-link-icon icon-members">
-                  <use xlinkHref="#svg-members"></use>
-                </svg>
-                Membres
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="/badges">
-                <svg className="menu-item-link-icon icon-badges">
-                  <use xlinkHref="#svg-badges"></use>
-                </svg>
-                Badges
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="/quetes">
-                <svg className="menu-item-link-icon icon-quests">
-                  <use xlinkHref="#svg-quests"></use>
-                </svg>
-                Quêtes
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="/forums">
-                <svg className="menu-item-link-icon icon-forums">
-                  <use xlinkHref="#svg-forums"></use>
-                </svg>
-                Forums
-              </Link>
-            </li>
-
-            <li className="menu-item">
-              <Link className="menu-item-link" to="/marketplace">
-                <svg className="menu-item-link-icon icon-marketplace">
-                  <use xlinkHref="#svg-marketplace"></use>
-                </svg>
-                Marketplace
-              </Link>
-            </li>
-          </ul>
-        </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 1019}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, transform: 'translate3d(0px, 0px, 0px)',display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 346, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div>
         </nav>
 
         <nav id="navigation-widget-mobile" ref={refmenu} className={`navigation-widget navigation-widget-mobile sidebar left ${menu === 'active'? '': 'hidden'}`} data-simplebar="init" style={{height: 674}}><div className="simplebar-wrapper" style={{margin: '0px 0px -40px'}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: '0px 0px 40px'}}>
@@ -386,7 +296,7 @@ const toggleNotifi = () => {
                 <svg className="menu-item-link-icon icon-group">
                   <use xlinkHref="#svg-group"></use>
                 </svg>
-                Amis
+                Mes amis
               </Link>
             </li>
 
@@ -436,45 +346,28 @@ const toggleNotifi = () => {
             </li>
           </ul>
 
-          <p className="navigation-widget-section-title">My Profile</p>
+          <p className="navigation-widget-section-title">Mon profile</p>
 
-          <Link className="navigation-widget-section-link" to="hub-profile-info.html">Profile Info</Link>
+          <Link className="navigation-widget-section-link" to="#">Profile Info</Link>
 
-          <Link className="navigation-widget-section-link" to="hub-profile-social.html">Social &amp; Stream</Link>
+          <Link className="navigation-widget-section-link" to="#">Notifications</Link>
 
-          <Link className="navigation-widget-section-link" to="hub-profile-notifications.html">Notifications</Link>
+          <Link className="navigation-widget-section-link" to="#">Messages</Link>
 
-          <Link className="navigation-widget-section-link" to="hub-profile-messages.html">Messages</Link>
+          <Link className="navigation-widget-section-link" to="#">Demandes d'ami</Link>
 
-          <Link className="navigation-widget-section-link" to="hub-profile-requests.html">Friend Requests</Link>
+          <p className="navigation-widget-section-title">Compte</p>
 
-          <p className="navigation-widget-section-title">Account</p>
+          <Link className="navigation-widget-section-link" to="#">Informations du compte</Link>
 
-          <Link className="navigation-widget-section-link" to="hub-account-info.html">Account Info</Link>
+          <Link className="navigation-widget-section-link" to="#">Changer le mot de passe</Link>
 
-          <Link className="navigation-widget-section-link" to="hub-account-password.html">Change Password</Link>
+          <Link className="navigation-widget-section-link" to="#">réglages généraux</Link>
 
-          <Link className="navigation-widget-section-link" to="hub-account-settings.html">General Settings</Link>
 
-          <p className="navigation-widget-section-title">Groups</p>
+          <p className="navigation-widget-section-title">Liens principaux</p>
 
-          <Link className="navigation-widget-section-link" to="hub-group-management.html">Manage Groups</Link>
-
-          <Link className="navigation-widget-section-link" to="hub-group-invitations.html">Invitations</Link>
-
-          <p className="navigation-widget-section-title">My Store</p>
-
-          <Link className="navigation-widget-section-link" to="hub-store-account.html">My Account <span className="highlighted">$250,32</span></Link>
-
-          <Link className="navigation-widget-section-link" to="hub-store-statement.html">Sales Statement</Link>
-
-          <Link className="navigation-widget-section-link" to="hub-store-items.html">Manage Items</Link>
-
-          <Link className="navigation-widget-section-link" to="hub-store-downloads.html">Downloads</Link>
-
-          <p className="navigation-widget-section-title">Main Links</p>
-
-          <Link className="navigation-widget-section-link" to="#">Home</Link>
+          <Link className="navigation-widget-section-link" to="/">Accueil</Link>
 
           <Link className="navigation-widget-section-link" to="#">Careers</Link>
 
@@ -491,274 +384,33 @@ const toggleNotifi = () => {
 
         <aside id="chat-widget-messages" ref={refchat} className={`chat-widget ${chat === 'active'? '': 'closed'} sidebar right`}>
           <div className="chat-widget-messages" data-simplebar="init" style={{height: chat === 'active'? 427 : 514}}><div className="simplebar-wrapper" style={{margin: 0}}><div className="simplebar-height-auto-observer-wrapper"><div className="simplebar-height-auto-observer"></div></div><div className="simplebar-mask"><div className="simplebar-offset" style={{right: 0, bottom: 0}}><div className="simplebar-content-wrapper" style={{height: '100%', overflow: 'hidden scroll'}}><div className="simplebar-content" style={{padding: 0}}>
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline online">
-                      <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
+            {friend?.list?.map((item)=>
+              <div key={item.id} className="chat-widget-message">
+                <div className="user-status">
+                  <div className="user-status-avatar">
+                    <div className="user-avatar small no-outline online">
+                        <div className="user-avatar-content">
+                              <div style={{display: 'flex',justifyContent: 'center'}}>
+                                <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                </div>
+                            </div>
+                    </div>
                   </div>
+              
+                  <p className="user-status-title"><span className="bold">{item.first_name} {item.last_name}</span></p>
+              
+                  <p className="user-status-text small">Cliquez pour voir son profil</p>
+              
+                  <p className="user-status-timestamp floaty">level {item.level}</p>
                 </div>
-            
-                <p className="user-status-title"><span className="bold">Nick Grissom</span></p>
-            
-                <p className="user-status-text small">Can you stream the new game?</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
               </div>
-            </div>
+            )}
 
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline online">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Matt Parker</span></p>
-            
-                <p className="user-status-text small">Can you stream the new game?</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline away">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Neko Bebop</span></p>
-            
-                <p className="user-status-text small">Awesome! I'll see you there!</p>
-            
-                <p className="user-status-timestamp floaty">54mins</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline offline">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Bearded Wonder</span></p>
-            
-                <p className="user-status-text small">Great! Then we'll meet with them at...</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline online">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Sandra Strange</span></p>
-            
-                <p className="user-status-text small">Can you stream the new game?</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline online">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">James Murdock</span></p>
-            
-                <p className="user-status-text small">Great! Then we'll meet with them at...</p>
-            
-                <p className="user-status-timestamp floaty">7hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline away">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">The Green Goo</span></p>
-            
-                <p className="user-status-text small">Can you stream the new game?</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline online">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Sarah Diamond</span></p>
-            
-                <p className="user-status-text small">I'm sending you the latest news of...</p>
-            
-                <p className="user-status-timestamp floaty">16hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline offline">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Destroy Dex</span></p>
-            
-                <p className="user-status-text small">Can you stream the new game?</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline online">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Damian Greyson</span></p>
-            
-                <p className="user-status-text small">Can you stream the new game?</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
-              </div>
-            </div>
-
-            <div className="chat-widget-message">
-              <div className="user-status">
-                <div className="user-status-avatar">
-                  <div className="user-avatar small no-outline online">
-                  <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                  </div>
-                </div>
-            
-                <p className="user-status-title"><span className="bold">Paul Lang</span></p>
-            
-                <p className="user-status-text small">Can you stream the new game?</p>
-            
-                <p className="user-status-timestamp floaty">2hrs</p>
-              </div>
-            </div>
           </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: menu === 'active'? 792 : 735}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 359, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div></div>
 
           <form className="chat-widget-form">
             <div className="interactive-input small">
-              <input type="text" id="chat-widget-search" name="chat_widget_search" placeholder="Search Messages..."/>
+              <input type="text" id="chat-widget-search" name="chat_widget_search" placeholder="Rechercher dans la liste..."/>
               <div className="interactive-input-icon-wrap">
                 <svg className="interactive-input-icon icon-magnifying-glass">
                   <use xlinkHref="#svg-magnifying-glass"></use>
@@ -801,7 +453,7 @@ const toggleNotifi = () => {
                 <div className="user-avatar small no-outline online">
                 <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
                           </div>
       
@@ -822,7 +474,7 @@ const toggleNotifi = () => {
               <div className="chat-widget-speaker-avatar">
                 <div className="user-avatar tiny no-border">
                   <div className="user-avatar-content">
-                    <img src="https://odindesignthemes.com/vikinger/img/avatar/03.jpg" style={{width: 24, height: 26, position: 'relative'}}/>
+                    <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/03.jpg'} style={{width: 24, height: 26, position: 'relative'}}/>
                   </div>
                 </div>
               </div>
@@ -844,7 +496,7 @@ const toggleNotifi = () => {
               <div className="chat-widget-speaker-avatar">
                 <div className="user-avatar tiny no-border">
                   <div className="user-avatar-content">
-                    <img src="https://odindesignthemes.com/vikinger/img/avatar/03.jpg" style={{width: 24, height: 26, position: 'relative'}}/>
+                    <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/03.jpg'} style={{width: 24, height: 26, position: 'relative'}}/>
                   </div>
                 </div>
               </div>
@@ -919,12 +571,12 @@ const toggleNotifi = () => {
             <nav className="navigation">
               <ul className="menu-main">
                 <li className="menu-main-item">
-                  <Link className="menu-main-item-link" to="#">Home</Link>
+                  <Link className="menu-main-item-link" to="/">Accueil</Link>
                 </li>
 
-                <li className="menu-main-item">
-                  <Link className="menu-main-item-link" to="#">Careers</Link>
-                </li>
+                {/* <li className="menu-main-item">
+                  <Link className="menu-main-item-link" to="#">Carrières</Link>
+                </li> */}
 
                 <li className="menu-main-item">
                   <Link className="menu-main-item-link" to="#">Faqs</Link>
@@ -939,19 +591,19 @@ const toggleNotifi = () => {
 
                   <ul className="menu-main">
                     <li className="menu-main-item">
-                      <Link className="menu-main-item-link" to="#">About Us</Link>
+                      <Link className="menu-main-item-link" to="#">À propos de nous</Link>
                     </li>
 
                     <li className="menu-main-item">
-                      <Link className="menu-main-item-link" to="#">Our Blog</Link>
+                      <Link className="menu-main-item-link" to="#">Notre blog</Link>
                     </li>
 
                     <li className="menu-main-item">
-                      <Link className="menu-main-item-link" to="#">Contact Us</Link>
+                      <Link className="menu-main-item-link" to="#">Nous contacter</Link>
                     </li>
 
                     <li className="menu-main-item">
-                      <Link className="menu-main-item-link" to="#">Privacy Policy</Link>
+                      <Link className="menu-main-item-link" to="#">Politique de confidentialité</Link>
                     </li>
                   </ul>
                 </li>
@@ -960,8 +612,8 @@ const toggleNotifi = () => {
           </div>
 
           <div className="header-actions search-bar" style={{position: 'relative'}}>
-            <div className="interactive-input dark">
-              <input type="text" id="search-main" name="search_main" placeholder="Rechercher vos amis ici!"/>
+            <div className={`interactive-input dark ${search !== ''? 'active': ''}`}>
+              <input ref={refsearch} type="text" id="search-main" name="search" value={search} onChange={handleSearch} placeholder="Rechercher vos amis ici!"/>
               <div className="interactive-input-icon-wrap">
                 <svg className="interactive-input-icon icon-magnifying-glass">
                   <use xlinkHref="#svg-magnifying-glass"></use>
@@ -975,122 +627,40 @@ const toggleNotifi = () => {
               </div>
             </div>
 
-            <div className="dropdown-box padding-bottom-small header-search-dropdown" style={{position: 'absolute', zIndex: 9999, top: 57, left: 0, opacity: 0, visibility: 'hidden', transform: 'translate(0px, -40px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
+            <div className="dropdown-box padding-bottom-small header-search-dropdown" style={{position: 'absolute', zIndex: 9999, top: 57, left: 0, opacity: 1, visibility: search !== ''? 'visible': 'hidden', transform: 'translate(0px, 0px)', transition: 'transform 0.4s ease-in-out 0s, opacity 0.4s ease-in-out 0s, visibility 0.4s ease-in-out 0s'}}>
               <div className="dropdown-box-category">
-                <p className="dropdown-box-category-title">Members</p>
+                <p className="dropdown-box-category-title">Membres</p>
               </div>
           
               <div className="dropdown-box-list small no-scroll">
-                <Link className="dropdown-box-list-item" to="#">
-                  <div className="user-status notification">
-                    <div className="user-status-avatar">
-                      <div className="user-avatar small no-outline">
-                      <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                      </div>
-                    </div>
-                
-                    <p className="user-status-title"><span className="bold">Neko Bebop</span></p>
-                
-                    <p className="user-status-text">1 friends in common</p>
-                
-                    <div className="user-status-icon">
-                      <svg className="icon-friend">
-                        <use xlinkHref="#svg-friend"></use>
-                      </svg>
-                    </div>
-                  </div>
-                </Link>
-          
-                <Link className="dropdown-box-list-item" to="#">
-                  <div className="user-status notification">
-                    <div className="user-status-avatar">
-                      <div className="user-avatar small no-outline">
-                      <div className="user-avatar-content">
-                            <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
-                              </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
-                          </div>
-                      </div>
-                    </div>
-                
-                    <p className="user-status-title"><span className="bold">Tim Rogers</span></p>
-                
-                    <p className="user-status-text">4 friends in common</p>
-                
-                    <div className="user-status-icon">
-                      <svg className="icon-friend">
-                        <use xlinkHref="#svg-friend"></use>
-                      </svg>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-          
-              <div className="dropdown-box-category">
-                <p className="dropdown-box-category-title">Groups</p>
-              </div>
-          
-              <div className="dropdown-box-list small no-scroll">
-                <Link className="dropdown-box-list-item" to="group-timeline.html">
-                  <div className="user-status notification">
-                    <div className="user-status-avatar">
-                      <div className="user-avatar small no-border">
+                {filteredData?.map((item)=> 
+                  <Link key={item.id} className="dropdown-box-list-item" to="#">
+                    <div className="user-status notification">
+                      <div className="user-status-avatar">
+                        <div className="user-avatar small no-outline">
                         <div className="user-avatar-content">
-                          <img src="https://odindesignthemes.com/vikinger/img/avatar/24.jpg" style={{width: 40, height: 44, position: 'relative'}}/>
+                              <div style={{display: 'flex',justifyContent: 'center'}}>
+                                <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                </div>
+                            </div>
                         </div>
                       </div>
+                  
+                      <p className="user-status-title"><span className="bold">{item.first_name} {item.last_name}</span></p>
+                  
+                      <p className="user-status-text">{moment(item.date_joined).calendar()}</p>
+                  
+                      <div className="user-status-icon" onClick={() => addFriend(item.id)}>
+                        <svg className="action-request-icon icon-add-friend">
+                          <use xlinkHref="#svg-add-friend"></use>
+                        </svg>
+                      </div>
                     </div>
-                
-                    <p className="user-status-title"><span className="bold">Cosplayers of the World</span></p>
-                
-                    <p className="user-status-text">139 members</p>
-                
-                    <div className="user-status-icon">
-                      <svg className="icon-group">
-                        <use xlinkHref="#svg-group"></use>
-                      </svg>
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
+                )}
+
               </div>
-          
-              <div className="dropdown-box-category">
-                <p className="dropdown-box-category-title">Marketplace</p>
-              </div>
-            
-              <div className="dropdown-box-list small no-scroll">
-                <Link className="dropdown-box-list-item" to="#">
-                  <div className="user-status no-padding-top">
-                    <div className="user-status-avatar">
-                      <figure className="picture small round liquid" style={{background: 'url(&quot;https://odindesignthemes.com/vikinger/img/marketplace/items/07.jpg&quot;) center center / cover no-repeat'}}>
-                        <img src="https://odindesignthemes.com/vikinger/img/marketplace/items/07.jpg" alt="item-07" style={{display: 'none'}}/>
-                      </figure>
-                    </div>
-                
-                    <p className="user-status-title"><span className="bold">Mercenaries White Frame</span></p>
-                
-                    <p className="user-status-text">By Neko Bebop</p>
-                
-                    <div className="user-status-icon">
-                      <svg className="icon-marketplace">
-                        <use xlinkHref="#svg-marketplace"></use>
-                      </svg>
-                    </div>
-                  </div>
-                </Link>
-              </div>
+              
             </div>
           </div>
 
@@ -1201,7 +771,7 @@ const toggleNotifi = () => {
                           <p className="user-status-text">{moment(item.timestamp).calendar()}</p>
                       
                           <div className="action-request-list">
-                            <div className="action-request accept">
+                            <div className="action-request accept" onClick={() => acceptFriend(item.from_user)}>
                               <svg className="action-request-icon icon-add-friend">
                                 <use xlinkHref="#svg-add-friend"></use>
                               </svg>
@@ -1219,7 +789,7 @@ const toggleNotifi = () => {
               
                   </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 228}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{height: 0, display: 'none'}}></div></div></div>
               
-                  <Link className="dropdown-box-button secondary" to="hub-profile-requests.html">View all Requests</Link>
+                  <Link className="dropdown-box-button secondary" to="#">View all Requests</Link>
                 </div>
               </div>
 
@@ -1264,7 +834,7 @@ const toggleNotifi = () => {
                           </div>
                         </Link>
               
-                        <p className="user-status-title"><Link className="bold" to="#">QuizaPay</Link> vous a laissé une coeur <img className="reaction" src="https://odindesignthemes.com/vikinger/img/reaction/love.png" alt="reaction-love"/> Bienvenue parmi nous <Link className="highlighted" to="#">{user.first_name}</Link></p>
+                        <p className="user-status-title"><Link className="bold" to="#">QuizaPay</Link> vous a laissé une coeur <img className="reaction" src={process.env.PUBLIC_URL + '/static/assets/img/reaction/love.png'} alt="reaction-love"/> Bienvenue parmi nous <Link className="highlighted" to="#">{user.first_name}</Link></p>
               
                         <p className="user-status-timestamp">{moment(user.date_joined).calendar()}</p>
               
@@ -1273,7 +843,7 @@ const toggleNotifi = () => {
               
                   </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 481}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 366, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div></div>
               
-                  <Link className="dropdown-box-button secondary" to="hub-profile-notifications.html">View all Notifications</Link>
+                  <Link className="dropdown-box-button secondary" to="#">View all Notifications</Link>
                 </div>
               </div>
             </div>
@@ -1292,7 +862,7 @@ const toggleNotifi = () => {
                       <div className="user-avatar small no-outline">
                       <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
                           </div>
       
@@ -1302,47 +872,29 @@ const toggleNotifi = () => {
                       </div>
                     </Link>
                 
-                    <p className="user-status-title"><span className="bold">Hi Marina!</span></p>
+                    <p className="user-status-title"><span className="bold">Hi {user.first_name}!</span></p>
                 
-                    <p className="user-status-text small"><Link to="#">@marinavalentine</Link></p>
+                    {/* <p className="user-status-text small"><Link to="#">@user</Link></p> */}
                   </div>
                 </div>
             
-                <p className="dropdown-navigation-category">My Profile</p>
+                <p className="dropdown-navigation-category">Mon Profile</p>
             
-                <Link className="dropdown-navigation-link" to="hub-profile-info.html">Profile Info</Link>
+                <Link className="dropdown-navigation-link" to="#">Profile Info</Link>
+                        
+                <Link className="dropdown-navigation-link" to="#">Notifications</Link>
             
-                <Link className="dropdown-navigation-link" to="hub-profile-social.html">Social &amp; Stream</Link>
+                <Link className="dropdown-navigation-link" to="#">Messages</Link>
             
-                <Link className="dropdown-navigation-link" to="hub-profile-notifications.html">Notifications</Link>
-            
-                <Link className="dropdown-navigation-link" to="hub-profile-messages.html">Messages</Link>
-            
-                <Link className="dropdown-navigation-link" to="hub-profile-requests.html">Friend Requests</Link>
+                <Link className="dropdown-navigation-link" to="#">Friend Requests</Link>
             
                 <p className="dropdown-navigation-category">Account</p>
             
-                <Link className="dropdown-navigation-link" to="hub-account-info.html">Account Info</Link>
+                <Link className="dropdown-navigation-link" to="#">Account Info</Link>
             
-                <Link className="dropdown-navigation-link" to="hub-account-password.html">Change Password</Link>
+                <Link className="dropdown-navigation-link" to="#">Change Password</Link>
             
-                <Link className="dropdown-navigation-link" to="hub-account-settings.html">General Settings</Link>
-            
-                <p className="dropdown-navigation-category">Groups</p>
-            
-                <Link className="dropdown-navigation-link" to="hub-group-management.html">Manage Groups</Link>
-            
-                <Link className="dropdown-navigation-link" to="hub-group-invitations.html">Invitations</Link>
-            
-                <p className="dropdown-navigation-category">My Store</p>
-            
-                <Link className="dropdown-navigation-link" to="hub-store-account.html">My Account <span className="highlighted">$250,32</span></Link>
-            
-                <Link className="dropdown-navigation-link" to="hub-store-statement.html">Sales Statement</Link>
-            
-                <Link className="dropdown-navigation-link" to="hub-store-items.html">Manage Items</Link>
-            
-                <Link className="dropdown-navigation-link" to="hub-store-downloads.html">Downloads</Link>
+                <Link className="dropdown-navigation-link" to="#">General Settings</Link>
             
                 <p className="dropdown-navigation-button button small secondary" onClick={handlelogout}>Deconnecter</p>
               </div>
@@ -1352,12 +904,14 @@ const toggleNotifi = () => {
 
         <aside className="floaty-bar">
           <div className="bar-actions">
-            <div className="progress-stat">
+          <div className="progress-stat">
               <div className="bar-progress-wrap">
-                <p className="bar-progress-info">Next: <span className="bar-progress-text">12<span className="bar-progress-unit">exp</span></span></p>
+                <p className="bar-progress-info">Prochaine: <span className="bar-progress-text">50<span className="bar-progress-unit">Exp</span></span></p>
               </div>
           
-              <div id="logged-user-level-cp" className="progress-stat-bar" style={{width: 0, height: 4, position: 'relative'}}><canvas width="0" height="4" style={{position: 'absolute', top: 0, left: 0}}></canvas><canvas width="0" height="4" style={{position: 'absolute', top: 0, left: 0}}></canvas></div>
+              <div id="logged-user-level" className="progress-stat-bar" style={{width: 110, height: 4, position: 'relative'}}>
+              <ProgressBar height={15} bgColor="#FF864D" completed={level?.details?.progression} />
+                </div>
             </div>
           </div>
 
@@ -1369,26 +923,26 @@ const toggleNotifi = () => {
                 </svg>
               </Link>
 
-              <Link className="action-list-item" to="hub-profile-requests.html">
+              <Link className="action-list-item" to="#">
                 <svg className="action-list-item-icon icon-friend">
                   <use xlinkHref="#svg-friend"></use>
                 </svg>
               </Link>
 
-              <Link className="action-list-item" to="hub-profile-messages.html">
-                <svg className="action-list-item-icon icon-messages">
-                  <use xlinkHref="#svg-messages"></use>
+              <Link className="action-list-item" to="/etape-1">
+                <svg className="action-list-item-icon icon-play">
+                  <use xlinkHref="#svg-play"></use>
                 </svg>
               </Link>
 
-              <Link className="action-list-item unread" to="hub-profile-notifications.html">
+              <Link className="action-list-item unread" to="#">
                 <svg className="action-list-item-icon icon-notification">
                   <use xlinkHref="#svg-notification"></use>
                 </svg>
               </Link>
             </div>
 
-            <Link className="action-item-wrap" to="hub-profile-info.html">
+            <Link className="action-item-wrap" to="#">
               <div className="action-item dark">
                 <svg className="action-item-icon icon-settings">
                   <use xlinkHref="#svg-settings"></use>

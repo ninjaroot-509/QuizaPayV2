@@ -17,6 +17,7 @@ import StepC2 from './Challenge/StepC2.js';
 import Navbar from './Components/Header/Navbar';
 import { Route, Switch, HashRouter as Router } from 'react-router-dom'
 import { getUser, getToken } from './Components/Common/Auth/Sessions'
+import 'moment/locale/fr'
 // import { Router } from "react-router";
 
 import NotFound from './Views/NotFound';

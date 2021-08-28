@@ -116,13 +116,13 @@ class FriendRequest(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
-		return "From {}, to {}".format(self.from_user.phone, self.to_user.phone)
+		return "From {}, to {}".format(self.from_user.first_name, self.to_user.first_name)
         
 # def email_new_user(sender, **kwargs):
 #     if kwargs["created"]:  # only for new users
 #         new_user = kwargs["instance"] 
-#         subject = "New user (%s)" % str(sender.phone)
-#         message = "l'utisateur %s vient juste de creer un compte." % sender.phone
+#         subject = "New user (%s)" % str(sender.first_name)
+#         message = "l'utisateur %s vient juste de creer un compte." % sender.first_name
 #         mail_admins(subject, message)
 # post_save.connect(email_new_user, sender=settings.AUTH_USER_MODEL)
 
@@ -160,7 +160,7 @@ class quizzes(models.Model):
         verbose_name_plural = 'Listes des quizzes'
 
     def __str__(self):
-        return '{} - {}'.format(self.owner.phone, self.name)
+        return '{} - {}'.format(self.owner.first_name, self.name)
 
 class questions(models.Model):
     quizz_id = models.ForeignKey(quizzes, related_name='quizz_id', on_delete=models.CASCADE)
@@ -238,7 +238,7 @@ class Wallet(models.Model):
         verbose_name_plural = 'Listes des portefeuilles'
 
     def __str__(self):
-        return '{} a {} Gourdes'.format(self.user.phone, self.montant) # TODO
+        return '{} a {} Gourdes'.format(self.user.first_name, self.montant) # TODO
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_user_wallet(sender, instance, created, **kwargs):
@@ -258,7 +258,7 @@ class Coin(models.Model):
         verbose_name_plural = 'Coins'
 
     def __str__(self):
-        return '{} a {} coins'.format(self.user.phone, self.coins) # TODO
+        return '{} a {} coins'.format(self.user.first_name, self.coins) # TODO
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_user_coin(sender, instance, created, **kwargs):
@@ -281,7 +281,7 @@ class WalletRequested(models.Model):
         verbose_name_plural = 'Listes des recharges'
 
     def __str__(self):
-        return self.user.phone # TODO
+        return self.user.first_name # TODO
 
 class WalletTransaction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
@@ -293,7 +293,7 @@ class WalletTransaction(models.Model):
         verbose_name_plural = 'Listes des transactions'
 
     def __str__(self):
-        return '{} a recu {} Gourdes le {}'.format(self.user.phone, self.montant, self.date) # TODO
+        return '{} a recu {} Gourdes le {}'.format(self.user.first_name, self.montant, self.date) # TODO
 
     
 class Retrait(models.Model):
@@ -308,4 +308,4 @@ class Retrait(models.Model):
         verbose_name_plural = 'Listes des retraits'
     
     def __str__(self):
-        return '{} a retire {} Gourdes a son portefeuille le {}'.format(self.user.phone, self.montant, self.date) # TODO
+        return '{} a retire {} Gourdes a son portefeuille le {}'.format(self.user.first_name, self.montant, self.date) # TODO

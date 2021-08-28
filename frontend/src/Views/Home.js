@@ -11,12 +11,19 @@ import moment from 'moment';
 const Home = () => {
     const [resultat, isLoading, setResultats] = useResultats();
     const [level, isLoadinglevel, setLevels] = useLevels();
+    const [temp, setTemp] = useState(0)
+
+    useEffect(()=>{
+        setInterval(()=>{
+            setTemp((prevTemp)=>prevTemp+1)
+        }, 6000)
+    }, [])
 
     useEffect(() => {
         if (!resultat.list || resultat.list.length === 0) {
           setResultats();
         }
-      }, [resultat, setResultats]);
+      }, [temp]);
 
       useEffect(() => {
         if (!level.details || level.details.length === 0) {
@@ -34,30 +41,30 @@ const Home = () => {
                 <div className="grid grid-half change-on-desktop" style={{marginTop: -45}}>
                     <div className="achievement-box secondary">
                     <div className="achievement-box-info-wrap">
-                        <img className="achievement-box-image" src="https://odindesignthemes.com/vikinger/img/badge/caffeinated-b.png" alt="badge-caffeinated-b"/>
+                        <img className="achievement-box-image" src={process.env.PUBLIC_URL + '/static/assets/img/badge/caffeinated-b.png'} alt="badge-caffeinated-b"/>
                 
                         <div className="achievement-box-info">
-                        <p className="achievement-box-title">Dernier badge déverrouillé</p>
+                        <p className="achievement-box-title">Jouez pour débloquer ce badge</p>
                 
-                        <p className="achievement-box-text"><span className="bold">Caffé</span> il y a 2 jours</p>
+                        <p className="achievement-box-text"><span className="bold">Caffé</span> {moment(user.date_joined).calendar()}</p>
                         </div>
                     </div>
                 
-                    <Link to="/etape-1" className="button white-solid">Continuer de jouer</Link>
+                    <Link to="/etape-1" className="button white-solid">Jouer au quiz</Link>
                     </div>
                 
                     <div className="achievement-box primary">
                     <div className="achievement-box-info-wrap">
-                        <img className="achievement-box-image" src="https://odindesignthemes.com/vikinger/img/quest/completedq-l.png" alt="quest-completedq-l"/>
+                        <img className="achievement-box-image" src={process.env.PUBLIC_URL + '/static/assets/img/quest/completedq-l.png'} alt="quest-completedq-l"/>
                 
                         <div className="achievement-box-info">
-                        <p className="achievement-box-title">Dernière quête terminée</p>
+                        <p className="achievement-box-title">Jouez pour terminée cette quête</p>
                 
-                        <p className="achievement-box-text"><span className="bold">Rien à cacher</span> Il y a 7 heures</p>
+                        <p className="achievement-box-text"><span className="bold">Rien à cacher</span> {moment(user.date_joined).calendar()}</p>
                         </div>
                     </div>
                 
-                    <Link to="/etape-1" className="button white-solid">Continuer de jouer</Link>
+                    <Link to="/etape-1" className="button white-solid">Jouer au quiz</Link>
                     
                     </div>
                 </div>
@@ -69,7 +76,7 @@ const Home = () => {
                         <div className="progress-arc-wrap" style={{display: 'contents',justifyContent: 'center'}}>
                                  <div style={{padding: 10}}>
                                         <div>
-                                            <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 100,height: 100, borderRadius: 15, border: '2px solid blue'}}/>
+                                            <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 100,height: 100, borderRadius: 15, border: '2px solid blue'}}/>
                                         </div>
                                     </div>
                     
@@ -87,7 +94,7 @@ const Home = () => {
                         </div>
                         </div>
 
-                        <div className="achievement-status-list">
+                        {/* <div className="achievement-status-list">
                         <div className="achievement-status">
                             <p className="achievement-status-progress">11/30</p>
 
@@ -97,7 +104,7 @@ const Home = () => {
                             <p className="achievement-status-text">Completed</p>
                             </div>
 
-                            <img className="achievement-status-image" src="https://odindesignthemes.com/vikinger/img/badge/completedq-s.png" alt="bdage-completedq-s"/>
+                            <img className="achievement-status-image" src={process.env.PUBLIC_URL + '/static/assets/img/badge/completedq-s.png'} alt="bdage-completedq-s"/>
                         </div>
 
                         <div className="achievement-status">
@@ -109,9 +116,9 @@ const Home = () => {
                             <p className="achievement-status-text">Unlocked</p>
                             </div>
 
-                            <img className="achievement-status-image" src="https://odindesignthemes.com/vikinger/img/badge/unlocked-badge.png" alt="bdage-unlocked-badge"/>
+                            <img className="achievement-status-image" src={process.env.PUBLIC_URL + '/static/assets/img/badge/unlocked-badge.png'} alt="bdage-unlocked-badge"/>
                         </div>
-                        </div>
+                        </div> */}
                     </div>
                     </div>
 
@@ -202,7 +209,7 @@ const Home = () => {
                                     <div className="user-avatar small no-outline">
                                     <div className="user-avatar-content">
                                         <div style={{display: 'flex',justifyContent: 'center'}}>
-                                        <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                        <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                         </div>
                                     </div>
                 
@@ -246,7 +253,7 @@ const Home = () => {
                                     <div className="user-avatar small no-outline">
                                     <div className="user-avatar-content">
                                         <div style={{display: 'flex',justifyContent: 'center'}}>
-                                        <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                        <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                         </div>
                                     </div>
                 
@@ -290,7 +297,7 @@ const Home = () => {
                                     <div className="user-avatar small no-outline">
                                     <div className="user-avatar-content">
                                         <div style={{display: 'flex',justifyContent: 'center'}}>
-                                        <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                        <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                         </div>
                                     </div>
                 
@@ -334,7 +341,7 @@ const Home = () => {
                                     <div className="user-avatar small no-outline">
                                     <div className="user-avatar-content">
                                         <div style={{display: 'flex',justifyContent: 'center'}}>
-                                        <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                        <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                         </div>
                                     </div>
                 
@@ -378,7 +385,7 @@ const Home = () => {
                                     <div className="user-avatar small no-outline">
                                     <div className="user-avatar-content">
                                         <div style={{display: 'flex',justifyContent: 'center'}}>
-                                        <img src="https://odindesignthemes.com/vikinger/img/avatar/04.jpg" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                        <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                         </div>
                                     </div>
                 

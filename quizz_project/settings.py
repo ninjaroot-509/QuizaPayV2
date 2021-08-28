@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'knox',
     'phonenumber_field',
-    'moncashify'
+    'moncashify',
+    'import_export'
 ]
 
 MIDDLEWARE = [
@@ -151,8 +152,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 #site id
 # SITE_ID = 1
-PHONENUMBER_DB_FORMAT = 'NATIONAL'
-PHONENUMBER_DEFAULT_REGION = 'HT'
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+# PHONENUMBER_DEFAULT_REGION = 'HT'
 #gmail config
 ########## EMAIL CONFIGURATION
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
