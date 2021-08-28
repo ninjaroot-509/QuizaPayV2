@@ -178,12 +178,8 @@ const toggleNotifi = () => {
           <Link className="user-avatar small no-outline online" to="#">
           <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={'http://localhost:8000' + user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
                           </div>
           </Link>
 
@@ -259,12 +255,8 @@ const toggleNotifi = () => {
             <Link className="user-avatar small no-outline" to="#">
               <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src="/logo.png" style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={'http://localhost:8000' + user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
                           </div>
               </Link>
 
@@ -369,17 +361,15 @@ const toggleNotifi = () => {
 
           <Link className="navigation-widget-section-link" to="/">Accueil</Link>
 
-          <Link className="navigation-widget-section-link" to="#">Careers</Link>
-
           <Link className="navigation-widget-section-link" to="#">Faqs</Link>
 
-          <Link className="navigation-widget-section-link" to="#">About Us</Link>
+          <Link className="navigation-widget-section-link" to="#">À propos de nous</Link>
 
-          <Link className="navigation-widget-section-link" to="#">Our Blog</Link>
+          <Link className="navigation-widget-section-link" to="#">Notre blog</Link>
 
-          <Link className="navigation-widget-section-link" to="#">Contact Us</Link>
+          <Link className="navigation-widget-section-link" to="#">Nous contacter</Link>
 
-          <Link className="navigation-widget-section-link" to="#">Privacy Policy</Link>
+          <Link className="navigation-widget-section-link" to="#">Politique de confidentialité</Link>
         </div></div></div></div><div className="simplebar-placeholder" style={{width: 'auto', height: 1976}}></div></div><div className="simplebar-track simplebar-horizontal" style={{visibility: 'hidden'}}><div className="simplebar-scrollbar" style={{width: 0, transform: 'translate3d(0px, 0px, 0px)',display: 'none'}}></div></div><div className="simplebar-track simplebar-vertical" style={{visibility: 'visible'}}><div className="simplebar-scrollbar" style={{height: 229, transform: 'translate3d(0px, 0px, 0px)', display: 'block'}}></div></div></nav>
 
         <aside id="chat-widget-messages" ref={refchat} className={`chat-widget ${chat === 'active'? '': 'closed'} sidebar right`}>
@@ -391,7 +381,7 @@ const toggleNotifi = () => {
                     <div className="user-avatar small no-outline online">
                         <div className="user-avatar-content">
                               <div style={{display: 'flex',justifyContent: 'center'}}>
-                                <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                <img src={'http://localhost:8000' + item.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                 </div>
                             </div>
                     </div>
@@ -640,7 +630,7 @@ const toggleNotifi = () => {
                         <div className="user-avatar small no-outline">
                         <div className="user-avatar-content">
                               <div style={{display: 'flex',justifyContent: 'center'}}>
-                                <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                <img src={'http://localhost:8000' + item.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                 </div>
                             </div>
                         </div>
@@ -760,7 +750,7 @@ const toggleNotifi = () => {
                           <Link className="user-status-avatar" to="#">
                             <div className="user-avatar-content">
                               <div style={{display: 'flex',justifyContent: 'center'}}>
-                                <img src="/logo.png" style={{width: 40,borderRadius: 10}}/>
+                                <img src={'http://localhost:8000' + user.photo} style={{width: 40,borderRadius: 10}}/>
                                 </div>
                             </div>
         
@@ -862,12 +852,8 @@ const toggleNotifi = () => {
                       <div className="user-avatar small no-outline">
                       <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src={process.env.PUBLIC_URL + '/static/assets/img/avatar/04.jpg'} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={'http://localhost:8000' + user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
-                          </div>
-      
-                          <div className="user-avatar-badge"style={{left: 25,top: 30}}>         
-                            <div style={{backgroundColor: '#143fff', padding: 2, borderRadius: 10, justifyContent: 'center',display: 'flex',alignItems: 'center',border: '2px solid #ffffff'}}><p className="user-avatar-badge-text">24</p></div>
                           </div>
                       </div>
                     </Link>

@@ -56,7 +56,7 @@ const RandomQ = ({nbQuestions, prixQ}) => {
               <WheelComponent
                   segments={segments}
                   segColors={segColors}
-                  winningSegment='Histoire'
+                  // winningSegment='Histoire'
                   onFinished={(category) => onFinished(category)}
                   primaryColor='#00a'
                   contrastColor='white'

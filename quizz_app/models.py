@@ -60,7 +60,7 @@ class User(AbstractUser):
 
     def photo_preview(self):
         if self.photo:
-            return format_html('<img src="{}" width="100px" height="60px"/>',self.photo.url,)
+            return format_html('<img src="{}" width=90px" height="70px"/>',self.photo.url,)
         return None
     
     class Meta:

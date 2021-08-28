@@ -47,8 +47,8 @@ class UserListView(APIView):
             key = token[1].lower()[0:8]
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             # tokenview = AuthToken.objects.get(token_key=key).user
-            user = User.objects.get(pk=tokenview).exclude(user=user) 
-        user_list = User.objects.all()
+            user = User.objects.get(pk=tokenview)
+        user_list = User.objects.all().exclude(pk=user.pk) 
         for f in user_list:
             if f in user.friends.all():
                 user_list = user_list.exclude(id=f.id)

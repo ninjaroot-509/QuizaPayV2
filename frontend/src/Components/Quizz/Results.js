@@ -19,15 +19,15 @@ export const Results = ({ right, nbQuestions, winn, prix, sauvegarder }) => {
         <>
             <div className="profile-header-info" style={{height: 440}}>
                 <div className="user-short-description" style={{paddingTop: 40}}>
-                <p className="user-short-description-title" style={{margin: "7px 20px"}}>{winn >= 50?'Bravo':'Désolé'} {user.username}!</p>
+                <p className="user-short-description-title" style={{margin: "7px 20px"}}>{winn >= 50?'Bravo':'Désolé'} {user.first_name}!</p>
                 <div style={{textAlign: 'center'}}>
                     <div> 
-                        <span style={{fontSize: 65, fontWeight: 'bold'}}>
+                        <span style={{fontSize: 70, fontWeight: 'bold'}}>
                             {right}/{nbQuestions} 
                         </span>
                     </div>
                     <div>
-                        <span role="img" aria-labelledby="icon">{winn >= 50? "Tu as gagné 🤓 🤩 🥳" : "Tu as perdu 🥺 😢 😭" }</span> 
+                        <span style={{fontSize: 25, fontWeight: 'bold'}} role="img" aria-labelledby="icon">{winn >= 50? "Tu as gagné 🤓 🤩 🥳" : "Tu as perdu 🥺 😢 😭" }</span> 
                     </div>
 
                     <div>
