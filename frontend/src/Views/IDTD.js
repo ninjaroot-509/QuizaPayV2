@@ -3,18 +3,26 @@ import React, { useState } from 'react'
 const IDTD = ({handleDone}) => {
 
     return (
-        <div className="container-login100">
-            <div className="wrap-login100 p-t-0 p-b-20">
-                <div className="login100-form validate-form">
-                    <span className="login100-form-title p-b-37">
+        <div style={{paddingTop: 150}}>
+            <div style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}>
+                <div className="form-box">
+                    <h4 className="text-center">
                         veuillez patientez...
-                    </span>
+                    </h4>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 10}}>
+                    <p>
+                        <div className="text-center">
+                            si dans les 5 prochaines minutes le virement n'a pas encore été effectué, merci de nous contacter au plus vite, QuizaPay !!
+                        </div>
+                        <div style={{display: 'grid',padding: 5}}>
+                            <span>+509 47929400</span>
+                            <span>+509 43208550</span>
+                        </div>
+                    </p>
+                    </div>
 
-                    <p>si dans les 5 prochaines minutes le virement n'a pas encore été effectué, merci de nous contacter au plus vite, QuizaPay !!</p>
-                    <p>47929400</p>
-
-                    <div className="container-login100-form-btn">
-                        <button onClick={handleDone} className="login100-form-btn">
+                    <div>
+                        <button onClick={handleDone} className="button primary full">
                             modifier l'ID transaction
                         </button>
                     </div>

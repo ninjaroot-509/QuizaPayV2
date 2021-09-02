@@ -178,7 +178,7 @@ const toggleNotifi = () => {
           <Link className="user-avatar small no-outline online" to="#">
           <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src={'http://localhost:8000' + user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
                           </div>
           </Link>
@@ -255,7 +255,7 @@ const toggleNotifi = () => {
             <Link className="user-avatar small no-outline" to="#">
               <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src={'http://localhost:8000' + user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
                           </div>
               </Link>
@@ -381,7 +381,7 @@ const toggleNotifi = () => {
                     <div className="user-avatar small no-outline online">
                         <div className="user-avatar-content">
                               <div style={{display: 'flex',justifyContent: 'center'}}>
-                                <img src={'http://localhost:8000' + item.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                <img src={'https://quizapay.com' + item.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                 </div>
                             </div>
                     </div>
@@ -630,7 +630,7 @@ const toggleNotifi = () => {
                         <div className="user-avatar small no-outline">
                         <div className="user-avatar-content">
                               <div style={{display: 'flex',justifyContent: 'center'}}>
-                                <img src={'http://localhost:8000' + item.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                                <img src={'https://quizapay.com' + item.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                                 </div>
                             </div>
                         </div>
@@ -750,7 +750,7 @@ const toggleNotifi = () => {
                           <Link className="user-status-avatar" to="#">
                             <div className="user-avatar-content">
                               <div style={{display: 'flex',justifyContent: 'center'}}>
-                                <img src={'http://localhost:8000' + user.photo} style={{width: 40,borderRadius: 10}}/>
+                                <img src={user.photo} style={{width: 40,borderRadius: 10}}/>
                                 </div>
                             </div>
         
@@ -852,7 +852,7 @@ const toggleNotifi = () => {
                       <div className="user-avatar small no-outline">
                       <div className="user-avatar-content">
                             <div style={{display: 'flex',justifyContent: 'center'}}>
-                              <img src={'http://localhost:8000' + user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
+                              <img src={user.photo} style={{width: 40,border: '2px solid #143fff',borderRadius: 10}}/>
                               </div>
                           </div>
                       </div>

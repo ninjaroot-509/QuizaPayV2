@@ -5,8 +5,8 @@ import {
 } from './Auth/Sessions'
 // import history from '../../history';
 
-// const url = 'https://quizapay.com/api/'
-    const url = 'http://localhost:8000/api/'
+const url = 'https://quizapay.com/api/'
+    // const url = 'http://localhost:8000/api/'
 const config = { headers: { 'Content-Type': 'application/json' } }
 const token = getToken()
 if (token) config.headers['Authorization'] = `Token ${token}`
@@ -20,6 +20,8 @@ const postInfo = (last_name, first_name) => axios.post(`${url}info-user/`, JSON.
 }), config)
 const postProgress = (progression) => axios.post(`${url}user-details/`, { progression }, config)
 const postPayQ = (prix) => axios.post(`${url}pay/`, { prix }, config)
+const postDepot = (montant) => axios.post(`${url}depot/`, { montant }, config)
+const postDepotDone = (idtrans) => axios.post(`${url}depot/`, { idtrans }, config)
 const postResults = (right, nbQuestions, quizId, prix) => axios.post(`${url}results/`, JSON.stringify({
     score: right,
     total: nbQuestions,
@@ -68,7 +70,7 @@ const postEndChallenge = (gameID) => axios.post(`${url}end/`, JSON.stringify({
     gameID: gameID
 }), config).then(res => res.data)
 
-const postTry = () => axios.post(`${url}try-agains/`, config)
+const postTry = (pk) => axios.post(`${url}try-agains/?pk=${pk}`, config)
 
 const postAddFriend = (id) => axios.post(`${url}friends-actions/`, JSON.stringify({
     id_add: id
@@ -83,26 +85,54 @@ const postCancelFriend = (id) => axios.post(`${url}friends-actions/`, JSON.strin
 }), config)
     // request GET 
 const getUserList = () => axios.get(`${url}users/`, config).then(res => res.data)
-const getFriendList = () => axios.get(`${url}friends/`, config).then(res => res.data)
+const getFriendList = () => axios.get(`${url}friends/`, config).then(res => res.data).catch(error => {
+    if (error.response.status === 401) {
+        removeUserSession()
+        window.location.reload()
+    }
+});
 const getPlayers = (gameID) => axios.get(`${url}players/?gameID=${gameID}`, config).then(res => res.data)
 const getStart = (gameID) => axios.get(`${url}start/?gameID=${gameID}`, config).then(res => res.data)
 const getQuizOrder = (id, userId) => axios.get(`${url}quizdone/?quizz_id=${id}&-details=${userId}`).then(res => res.data)
-const getWallet = () => axios.get(`${url}wallet/`, config).then(res => res.data)
-    .catch(error => {
+const getWallet = () => axios.get(`${url}wallet/`, config).then(res => res.data).catch(error => {
         if (error.response.status === 401) {
             removeUserSession()
             window.location.reload()
         }
     });
 const getCoin = () => axios.get(`${url}coins/`, config).then(res => res.data)
-const getLevel = () => axios.get(`${url}user-details/`, config).then(res => res.data)
-const getDemandeRecuList = () => axios.get(`${url}demandereculist/`, config).then(res => res.data)
+const getLevel = () => axios.get(`${url}user-details/`, config).then(res => res.data).catch(error => {
+    if (error.response.status === 401) {
+        removeUserSession()
+        window.location.reload()
+    }
+});
+const getDemandeRecuList = () => axios.get(`${url}demandereculist/`, config).then(res => res.data).catch(error => {
+    if (error.response.status === 401) {
+        removeUserSession()
+        window.location.reload()
+    }
+});
 const getDemandeSentList = () => axios.get(`${url}demandesentlist/`, config).then(res => res.data)
-const getResultat = () => axios.get(`${url}results/`, config).then(res => res.data)
+const getResultat = () => axios.get(`${url}results/`, config).then(res => res.data).catch(error => {
+    if (error.response.status === 401) {
+        removeUserSession()
+        window.location.reload()
+    }
+});
 
 const getRetrait = () => axios.get(`${url}retrait/`, config).then(res => res.data)
 const getQuizz = (id) => axios.get(`${url}quizzes/${id}/`).then(res => res.data)
-const getQuestions = (id) => axios.get(`${url}questions/?quizz_id=${id}`).then(res => res.data)
-const getQuestionsV2 = (nbQuestions, category) => axios.get(`${url}questions/?nbQ=${nbQuestions}&category=${category}`, config).then(res => res.data)
-
-export default { postLogin, postRegister, postAcceptFriend, postCancelFriend, postAddFriend, postInfo, postProgress, postPayQ, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getStart, getQuizz, getQuestions, getQuestionsV2, getQuizOrder, getWallet, getCoin, getResultat, getRetrait, getLevel, getDemandeRecuList, getDemandeSentList, getUserList, getFriendList }
+const getQuestions = (id) => axios.get(`${url}questions/?quizz_id=${id}`).then(res => res.data).catch(error => {
+    if (error.response.status === 401) {
+        removeUserSession()
+        window.location.reload()
+    }
+});
+const getQuestionsV2 = (nbQuestions, category) => axios.get(`${url}questions/?nbQ=${nbQuestions}&category=${category}`, config).then(res => res.data).catch(error => {
+    if (error.response.status === 401) {
+        removeUserSession()
+        window.location.reload()
+    }
+});
+export default { postLogin, postRegister, postAcceptFriend, postCancelFriend, postAddFriend, postInfo, postProgress, postPayQ, postDepot, postDepotDone, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getStart, getQuizz, getQuestions, getQuestionsV2, getQuizOrder, getWallet, getCoin, getResultat, getRetrait, getLevel, getDemandeRecuList, getDemandeSentList, getUserList, getFriendList }

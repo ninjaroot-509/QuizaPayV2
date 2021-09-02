@@ -148,7 +148,7 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
             </svg>
             35 HTG
           </p>
-            <img className="badge-item-stat-image" src="http://localhost:3000/static/assets/img/quest/openq-b.png" alt="Questionaires"/>
+            <img className="badge-item-stat-image" src="https://quizapay.com/static/assets/img/quest/openq-b.png" alt="Questionaires"/>
         
             <p className="badge-item-stat-title">5 Questions</p>
         
@@ -171,7 +171,7 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
             </svg>
             50 HTG
           </p>
-            <img className="badge-item-stat-image" src="http://localhost:3000/static/assets/img/quest/openq-b.png" alt="Questionaires"/>
+            <img className="badge-item-stat-image" src="https://quizapay.com/static/assets/img/quest/openq-b.png" alt="Questionaires"/>
         
             <p className="badge-item-stat-title">7 Questions</p>
         
@@ -194,7 +194,7 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
             </svg>
             75 HTG
           </p>
-            <img className="badge-item-stat-image" src="http://localhost:3000/static/assets/img/quest/completedq-b.png" alt="Questionaires"/>
+            <img className="badge-item-stat-image" src="https://quizapay.com/static/assets/img/quest/completedq-b.png" alt="Questionaires"/>
         
             <p className="badge-item-stat-title">10 Questions</p>
         

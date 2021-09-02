@@ -50,7 +50,7 @@ const LoginView = ({login}) => {
     }
     return (
         <div className="form-box login-register-form-element"  style={{display: login == true ? 'block' : 'none' }}>
-            <img className="form-box-decoration overflowing" src="http://localhost:3000/static/assets/img/landing/rocket.png" alt="rocket"/>
+            <img className="form-box-decoration overflowing" src="https://quizapay.com/static/assets/img/landing/rocket.png" alt="rocket"/>
 
             <h2 className="form-box-title">Connexion au compte</h2>
         
@@ -105,30 +105,19 @@ const LoginView = ({login}) => {
             </div>
             </form>
         
-            <p className="lined-text">Connectez-vous avec votre compte social</p>
+            <p className="lined-text">Connectez-vous avec</p>
         
             <div className="social-links">
+        
+            <a className="social-link google" href="#">
+                <svg className="icon-google">
+                <use xlinkHref="#svg-google"></use>
+                </svg>
+            </a>
+            
             <a className="social-link facebook" href="#">
                 <svg className="icon-facebook">
                 <use xlinkHref="#svg-facebook"></use>
-                </svg>
-            </a>
-        
-            <a className="social-link twitter" href="#">
-                <svg className="icon-twitter">
-                <use xlinkHref="#svg-twitter"></use>
-                </svg>
-            </a>
-        
-            <a className="social-link twitch" href="#">
-                <svg className="icon-twitch">
-                <use xlinkHref="#svg-twitch"></use>
-                </svg>
-            </a>
-        
-            <a className="social-link youtube" href="#">
-                <svg className="icon-youtube">
-                <use xlinkHref="#svg-youtube"></use>
                 </svg>
             </a>
             </div>

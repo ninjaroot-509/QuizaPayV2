@@ -52,7 +52,7 @@ const RegisterView = ({login}) => {
     }
     return (
         <div className="form-box login-register-form-element" style={{display: login == true ? 'none' : 'block'}}>
-            <img className="form-box-decoration" src="http://localhost:3000/static/assets/img/landing/rocket.png" alt="rocket"/>
+            <img className="form-box-decoration" src="https://quizapay.com/static/assets/img/landing/rocket.png" alt="rocket"/>
 
             <h2 className="form-box-title">S'enregistrer!</h2>
         

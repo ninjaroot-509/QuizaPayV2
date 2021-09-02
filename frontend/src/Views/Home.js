@@ -76,7 +76,7 @@ const Home = () => {
                         <div className="progress-arc-wrap" style={{display: 'contents',justifyContent: 'center'}}>
                                  <div style={{padding: 10}}>
                                         <div>
-                                            <img src={'http://localhost:8000' + user.photo} style={{width: 100,height: 100, borderRadius: 15, border: '2px solid blue'}}/>
+                                            <img src={user.photo} style={{width: 100,height: 100, borderRadius: 15, border: '2px solid blue'}}/>
                                         </div>
                                     </div>
                     

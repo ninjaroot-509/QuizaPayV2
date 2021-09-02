@@ -230,7 +230,7 @@ class results(models.Model):
 
 class Wallet(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    montant = models.FloatField(default=50)
+    montant = models.FloatField(default=35)
     recharge_effec = models.BooleanField(default=True)
 
     class Meta:

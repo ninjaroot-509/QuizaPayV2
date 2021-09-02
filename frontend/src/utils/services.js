@@ -1,5 +1,5 @@
 const api = {
-  url: 'http://localhost:8000/api/',
+  url: 'https://quizapay.com/api/',
   token: '',
 };
 

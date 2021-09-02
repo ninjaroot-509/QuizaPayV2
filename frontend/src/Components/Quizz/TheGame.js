@@ -131,7 +131,7 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
                         {questions[questionNo].image? 
                         <img style={{width: 160,height: 90,borderRadius: 8,position: 'relative'}} src={questions[questionNo].image}/>
                         : 
-                        <img style={{width: 70, position: 'relative'}} src={'http://localhost:8000' + questions[questionNo].cate_image}/>
+                        <img style={{width: 70, position: 'relative'}} src={'https://quizapay.com' + questions[questionNo].cate_image}/>
                         }
                     </div>
 

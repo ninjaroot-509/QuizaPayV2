@@ -571,7 +571,7 @@ class WalletView(APIView):
                 return JsonResponse({'status': 0, 'message': 'inssuffisance du capitale'}, status=status.HTTP_400_BAD_REQUEST)
         if montant:
             Preduce = int(montant) / int(total)
-            som = Preduce * int(right) * 2
+            som = Preduce * int(right) * 1.4
             Wallet.objects.filter(user=user).update(montant=F('montant') + som)
         return JsonResponse({'status': 1, 'message': 'success!!'})
 
@@ -642,18 +642,18 @@ class ProfileUpdateView(APIView):
             user = User.objects.get(pk=tokenview)
             userProfile = Profile.objects.get(pk=tokenview)
             
-        username = request.data.get("username", None)
+        first_name = request.data.get("first_name", None)
         first_name = request.data.get("first_name", None)
         last_name = request.data.get("last_name", None)
         email = request.data.get("email", None)
         phone = request.data.get("phone", None)
         bio = request.data.get("bio", None)
         photo = request.data.get("photo", None)
-        if username:
-            fil = User.objects.filter(username=username)
+        if first_name:
+            fil = User.objects.filter(first_name=first_name)
             if not fil:
-                if username:
-                    user.username = username
+                if phone:
+                    user.phone = phone
                 if email:
                     user.email = email
                 if first_name:
@@ -670,10 +670,10 @@ class ProfileUpdateView(APIView):
                 userProfile.save()
                 return JsonResponse({'status': 1, 'message': 'Your profile updated successfully!'})
             else:
-                return JsonResponse({'status': 0, 'message': 'username existe deja'}, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'status': 0, 'message': 'phone existe deja'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            if username:
-                user.username = username
+            if phone:
+                user.phone = phone
             if email:
                 user.email = email
             if first_name:
@@ -722,27 +722,23 @@ class WalletFormView(APIView):
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             user = User.objects.get(pk=tokenview)
         montant = request.data.get("montant")
-        Wallet.objects.filter(user=user).update(recharge_effec=False)
-        subject = strftime("Recharge, %Y-%m-%d %H:%M:%S", gmtime())
-        messageadmin = "L'utilisateur %s vient juste de faire une recharge, l'ID transaction est (%s) \n veuillez etre sure apres chaque recharge que vous vous occuper \n de mettre le button recharge_effec en True, \n Merci!!!" % (user.username, montant)
-        mail_admins(subject, messageadmin)
-        return JsonResponse({'status': 1, 'message': 'wallet success'})
+        idtrans = request.data.get("idtrans")
+        if idtrans:
+            Wallet.objects.filter(user=user).update(recharge_effec=False)
+            subject = strftime("Recharge, %Y-%m-%d %H:%M:%S", gmtime())
+            messageadmin = "L'utilisateur %s vient juste de faire une recharge, l'ID transaction est (%s) \n veuillez etre sure apres chaque recharge que vous vous occuper \n de mettre le button recharge_effec en True, \n Merci!!!" % (user.first_name, idtrans)
+            mail_admins(subject, messageadmin)
+            return JsonResponse({'status': 1, 'message': 'wallet success'})
+        else:
+            return JsonResponse({'status': 0, 'message': 'errorrr!!'}, status=status.HTTP_400_BAD_REQUEST)
 
 class TryView(APIView):
-    # Assume you have a model named WalletRequested
-    # this method will be used when walletreq try to update or save their wallet
-    # for POST requests.
     def post(self, request, format=None):
         pk = request.GET.get('pk', None)
         if pk != None:
             user = User.objects.get(pk=pk)
-        else:
-            token = request.META.get('HTTP_AUTHORIZATION', '').split()
-            key = token[1].lower()[0:8]
-            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
-            user = User.objects.get(pk=tokenview)
-        Wallet.objects.filter(user=user).update(recharge_effec=True)
-        return JsonResponse({'status': 1, 'message': 'wallet success'})
+            Wallet.objects.filter(user=user).update(recharge_effec=True)
+            return JsonResponse({'status': 1, 'message': 'wallet success'})
 
 class MoncashView(APIView):
     def post(self, request, format=None):
@@ -794,7 +790,7 @@ class RetraitView(APIView):
         Retrait.objects.create(user=user, montant=montant)
         Wallet.objects.filter(user=user).update(montant=F('montant') - montant)
         subject = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        messageadmin = "L'utilisateur %s veut faire un retrait de (%s Gourdes) a son compte moncash (%s) \n veuillez etre sure apres chaque retrait envoyer \n que vous activerez le button envoyer en True" % (user.username, montant, moncash_numero)
+        messageadmin = "L'utilisateur %s veut faire un retrait de (%s Gourdes) a son compte moncash (%s) \n veuillez etre sure apres chaque retrait envoyer \n que vous activerez le button envoyer en True" % (user.first_name, montant, moncash_numero)
         mail_admins(subject, messageadmin)
         return JsonResponse({'status': 1, 'message': 'wallet success'})
 

@@ -19,7 +19,7 @@ const StepC1 = ({handleCreateLa, joinGame, conthandle}) => {
   };
 
   return (
-    <div className="w-full absolute h-screen flex items-center justify-center">
+    <div className="content-grid">
       <div className="max-w-sm mx-4 p-6 shadow-lg rounded-md">
         <h1 className="font-hairline mb-2 text-4xl">QuizaPay</h1>
         <form className="w-full mb-4">

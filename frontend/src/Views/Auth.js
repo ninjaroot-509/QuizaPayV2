@@ -12,14 +12,14 @@ const Auth = () => {
 
             <div className="landing-info">
             <div className="logo">
-                <img src="/logo.png" alt="QuizaPay"  style={{width: 'auto', height: 70}}/> 
+                <img src="/logo1.png" alt="QuizaPay"  style={{width: 'auto', height: 70}}/> 
             </div>
 
             <h2 className="landing-info-pretitle">Bienvenue à</h2>
 
             <h1 className="landing-info-title">QuizaPay</h1>
 
-            <p className="landing-info-text">Le réseau social de la prochaine génération et &amp; communauté!Connectez-vous avec vos amis et jouez avec notre système de gamification de quêtes et de badges!</p>
+            <p className="landing-info-text">Le réseau quiz de la prochaine génération &amp; communauté! Connectez-vous avec vos amis et jouez avec notre système de gamification de quêtes et de badges!</p>
 
             <div className="tab-switch">
                 <p className={`tab-switch-button login-register-form-trigger ${login == true? 'active' : ''}`} onClick={() => setLogin(true)}>Connexion</p>

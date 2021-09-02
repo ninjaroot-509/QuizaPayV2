@@ -31,7 +31,7 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
     const winn = Math.round((right) * (100) / nbQuestions)
 
     const Preduce = prixQ / nbQuestions
-    const som = Preduce * right * 2
+    const som = Preduce * right * 1.4
 
     const progression = winn <= 20? 10 : winn <= 50? 25 : winn <= 100? 50 : 10
 
@@ -49,8 +49,8 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
         request.postWinPay(prixQ, nbQuestions, right)
         request.postResults(right, nbQuestions, quizId, prixQ)
         request.postProgress(progression)
-        setWallets() 
         setTimeout(() => { 
+            setWallets() 
             setLevels()
         }, 700);
     }
