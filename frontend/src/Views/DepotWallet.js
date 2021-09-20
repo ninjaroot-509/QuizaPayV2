@@ -83,7 +83,7 @@ const DepotWallet = () => {
                 </CopyToClipboard>  
                 <div style={{paddingTop: 10}}>
                     <a href={`tel:*202*32*760*${montant}*${moncashQuizaPay}*${pin}%23`} className="button primary full">
-                        Dans mon telelephone
+                        Dans mon telephone
                     </a>
                 </div>
             </div>

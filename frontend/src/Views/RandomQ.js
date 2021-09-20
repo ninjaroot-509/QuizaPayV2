@@ -1,41 +1,23 @@
 import React, { useState } from 'react'
-import { getToken } from '../Components/Common/Auth/Sessions'
 import request from '../Components/Common/HttpRequests';
-import WheelComponent from 'react-wheel-of-prizes'
 import Quizz from './Quizz'
 import useSound from 'use-sound';
 
-const RandomQ = ({nbQuestions, prixQ}) => {
+const RandomQ = ({nbQuestions, prixQ, perdre, gains, princingId}) => {
   const [load, setLoad] = useState(true)
-
-  const segments = [
-    'Geographie',
-    'Langue française',
-    'Science',
-    'Animaux',
-    'Histoire',
-    'Sport',
-    'Art et culture'
-  ]
-
-  const segColors = [
-      '#34A24F',
-      '#3DA5E0',
-      '#EE4040',
-      '#F0CF50',
-      '#EC3F3F',
-      '#815CD6',
-      '#FF9000'
-  ]
 
   const [questions, setQuestions] = useState([])
   const [click, setClick] = useState(false)
 
-  const onFinished = (category) => {
-    request.getQuestionsV2(nbQuestions, category).then(res => {
+  const onClickGene = () => {
+    if (click === false){
+    // handleSong()
+    request.getQuestionsV2(nbQuestions).then(res => {
       setQuestions(res)
       setLoad(false)
     })
+    setClick(true)
+    }
   }
   const [playSong] = useSound(
     '/static/assets/audio/rand.mp3',
@@ -43,35 +25,22 @@ const RandomQ = ({nbQuestions, prixQ}) => {
   );
 
   const handleSong = () => {
-    if (click === false){
       playSong()
-      setClick(true)
-    }
   }
 
   if (load == true) {
     return (
       <div className="content-grid">
-          <div onClick={handleSong}>
-              <WheelComponent
-                  segments={segments}
-                  segColors={segColors}
-                  // winningSegment='Histoire'
-                  onFinished={(category) => onFinished(category)}
-                  primaryColor='#00a'
-                  contrastColor='white'
-                  buttonText='Tourner'
-                  isOnlyOnce={false}
-                  size={280}
-                  upDuration={100}
-                  downDuration={2350}
-                />
+          <div>
+              <button className="button primary" onClick={onClickGene}>
+                générer les questions
+              </button>
           </div>
       </div>
     )
   } else {
     return (
-      <Quizz questions={questions} nbQuestions={nbQuestions} prixQ={prixQ}/>
+      <Quizz questions={questions} nbQuestions={nbQuestions} prixQ={prixQ} perdre={perdre} gains={gains} princingId={princingId}/>
     )
   }
 }

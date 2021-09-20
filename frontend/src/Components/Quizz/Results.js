@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { getUser } from '../Common/Auth/Sessions'
 
 
-export const Results = ({ right, nbQuestions, winn, prix, sauvegarder }) => {
+export const Results = ({ right, nbQuestions, winn, prix, gains, sauvegarder }) => {
     const user = getUser()
     const [done, setDone] = useState(false)
 
@@ -31,7 +31,7 @@ export const Results = ({ right, nbQuestions, winn, prix, sauvegarder }) => {
                     </div>
 
                     <div>
-                        <span>Vous avez gagné {Math.round(prix)} gourde{prix > 1?'s':''}!
+                        <span>Vous avez gagné {Math.round(gains)} gourde{gains > 1?'s':''}!
                             <br /> 
                             qui ont déjà été transférés à votre porte-monnaie, <br />Merci QuizaPay!!!
                         </span>

@@ -5,8 +5,8 @@ import {
 } from './Auth/Sessions'
 // import history from '../../history';
 
-const url = 'https://quizapay.com/api/'
-    // const url = 'http://localhost:8000/api/'
+// const url = 'https://quizapay.com/api/'
+    const url = 'http://localhost:8000/api/'
 const config = { headers: { 'Content-Type': 'application/json' } }
 const token = getToken()
 if (token) config.headers['Authorization'] = `Token ${token}`
@@ -22,16 +22,15 @@ const postProgress = (progression) => axios.post(`${url}user-details/`, { progre
 const postPayQ = (prix) => axios.post(`${url}pay/`, { prix }, config)
 const postDepot = (montant) => axios.post(`${url}depot/`, { montant }, config)
 const postDepotDone = (idtrans) => axios.post(`${url}depot/`, { idtrans }, config)
-const postResults = (right, nbQuestions, quizId, prix) => axios.post(`${url}results/`, JSON.stringify({
+const postResults = (right, nbQuestions, winnGains, prixQ) => axios.post(`${url}results/`, JSON.stringify({
     score: right,
     total: nbQuestions,
-    quizz_id: quizId,
-    prix: prix
+    winnGains: winnGains,
+    prix: prixQ,
 }), config)
-const postWinPay = (prixQ, nbQuestions, right) => axios.post(`${url}wallet/`, JSON.stringify({
-    montant: prixQ,
-    total: nbQuestions,
-    right: right
+const postWinPay = (princingId, perdre) => axios.post(`${url}wallet/`, JSON.stringify({
+    princingId: princingId,
+    perdre: perdre
 }), config)
 const postQuizRegister = (quizId) => axios.post(`${url}done/`, JSON.stringify({
     quiz_id: quizId,
@@ -129,10 +128,12 @@ const getQuestions = (id) => axios.get(`${url}questions/?quizz_id=${id}`).then(r
         window.location.reload()
     }
 });
-const getQuestionsV2 = (nbQuestions, category) => axios.get(`${url}questions/?nbQ=${nbQuestions}&category=${category}`, config).then(res => res.data).catch(error => {
+const getQuestionsV2 = (nbQuestions) => axios.get(`${url}questions/?nbQ=${nbQuestions}`, config).then(res => res.data).catch(error => {
     if (error.response.status === 401) {
         removeUserSession()
         window.location.reload()
     }
 });
-export default { postLogin, postRegister, postAcceptFriend, postCancelFriend, postAddFriend, postInfo, postProgress, postPayQ, postDepot, postDepotDone, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getStart, getQuizz, getQuestions, getQuestionsV2, getQuizOrder, getWallet, getCoin, getResultat, getRetrait, getLevel, getDemandeRecuList, getDemandeSentList, getUserList, getFriendList }
+
+const getPrincing = () => axios.get(`${url}princings/`, config).then(res => res.data)
+export default { postLogin, postRegister, postAcceptFriend, postCancelFriend, postAddFriend, postInfo, postProgress, postPayQ, postDepot, postDepotDone, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getPrincing, getStart, getQuizz, getQuestions, getQuestionsV2, getQuizOrder, getWallet, getCoin, getResultat, getRetrait, getLevel, getDemandeRecuList, getDemandeSentList, getUserList, getFriendList }

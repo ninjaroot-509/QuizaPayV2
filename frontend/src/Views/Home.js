@@ -159,7 +159,7 @@ const Home = () => {
                                 {item.gain} HTG
                             </p>
                     
-                            <p className="exp-line-text">"{item.quizz_name}" un score de {item.score} sur {item.total}.</p>
+                            <p className="exp-line-text">Dans un score de {item.score} sur {item.total}.</p>
                     
                             <p className="exp-line-timestamp">{moment(item.created_at).calendar()}</p>
                             </div>

@@ -7,8 +7,9 @@ import questReducer from './quest/reducers';
 import resultatReducer from './resultat/reducers';
 import userlistReducer from './userlist/reducers';
 import levelReducer from './level/reducers';
+import princingReducer from './princing/reducers';
 
-export default ({ level, coin, wallet, friend, friendrequest, badge, quest, resultat, userlist }, action) => ({
+export default ({ level, coin, wallet, friend, friendrequest, badge, quest, resultat, userlist, princing }, action) => ({
   coin: coinReducer(coin, action),
   wallet: walletReducer(wallet, action),
   friend: friendReducer(friend, action),
@@ -18,4 +19,5 @@ export default ({ level, coin, wallet, friend, friendrequest, badge, quest, resu
   resultat: resultatReducer(resultat, action),
   userlist: userlistReducer(userlist, action),
   level: levelReducer(level, action),
+  princing: princingReducer(princing, action),
 });

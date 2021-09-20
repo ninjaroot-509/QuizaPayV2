@@ -10,6 +10,7 @@ import { INITIAL_STATE as FRIENDREQUEST_INITIAL_STATE } from './state/friendrequ
 import { INITIAL_STATE as BADGE_INITIAL_STATE } from './state/badge/reducers';
 import { INITIAL_STATE as USERLIST_INITIAL_STATE } from './state/userlist/reducers';
 import { INITIAL_STATE as LEVEL_INITIAL_STATE } from './state/level/reducers';
+import { INITIAL_STATE as PRINCING_INITIAL_STATE } from './state/princing/reducers';
 import reducers from './state/reducers';
 import * as serviceWorker from './serviceWorker';
 
@@ -23,6 +24,7 @@ const initialState = {
   quest: BADGE_INITIAL_STATE,
   userlist: USERLIST_INITIAL_STATE,
   level: LEVEL_INITIAL_STATE,
+  princing: PRINCING_INITIAL_STATE
 };
 
 ReactDOM.render(

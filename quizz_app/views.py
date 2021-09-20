@@ -376,6 +376,13 @@ class QuizPayView(APIView):
                 return JsonResponse({'status': 0, 'message': 'inssuffisance de coin disponible, veuillez reacharger!!'}, status=status.HTTP_400_BAD_REQUEST)
         return JsonResponse({'status': 1, 'message': 'success!!'})
 
+
+class PrincingView(APIView):
+    def get(self, request, format=None):
+        pr = Princing.objects.all()
+        serializer = PrincingSerializer(pr, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
 class QuizResultsView(APIView):
     def get(self, request, format=None):
         pk = request.GET.get('pk', None)
@@ -388,7 +395,7 @@ class QuizResultsView(APIView):
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
-        resu = results.objects.filter(player=user)
+        resu = results.objects.filter(player=user).order_by('-created_at')
         serializer = ResultSerializer(resu, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -405,12 +412,9 @@ class QuizResultsView(APIView):
             user = User.objects.get(pk=tokenview)
         score = request.data.get("score")
         total = request.data.get("total")
-        quizz_id = request.data.get("quizz_id")
+        winnGains = request.data.get("winnGains")
         prix = request.data.get("prix")
-        Preduce = int(prix) / int(total)
-        som = Preduce * int(score) * 2
-        getquizzes = get_object_or_404(quizzes, pk=quizz_id)
-        results.objects.create(player=user, score=score, total=total, quizz_id=getquizzes, gain=som, prix=prix)
+        results.objects.create(player=user, score=score, total=total, quizz_id=None, gain=winnGains, prix=prix)
         return JsonResponse({'status': 1, 'message': 'success!!'})
 
 class QuizDoneView(APIView):
@@ -557,10 +561,11 @@ class WalletView(APIView):
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
         montant = request.data.get("montant", None)
-        right = request.data.get("right", None)
-        total = request.data.get("total", None)
+        perdre = request.data.get("perdre", None)
+        princingId = request.data.get("princingId", None)
         coin = request.data.get("coin", None)
         getwallet = Wallet.objects.get(user=user)
+        
         if coin:
             montantan = 25
             kob = int(montantan) * int(coin)
@@ -569,10 +574,46 @@ class WalletView(APIView):
                 Coin.objects.filter(user=user).update(coins=F('coins') + coin)
             else:
                 return JsonResponse({'status': 0, 'message': 'inssuffisance du capitale'}, status=status.HTTP_400_BAD_REQUEST)
-        if montant:
-            Preduce = int(montant) / int(total)
-            som = Preduce * int(right) * 1.4
-            Wallet.objects.filter(user=user).update(montant=F('montant') + som)
+        if perdre and princingId:
+            getPrincing = Princing.objects.get(pk=princingId)
+            if getPrincing.perdre == 1:
+                if int(perdre) == 0:
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + getPrincing.gains)
+                elif int(perdre) == 1:
+                    pourcentage1 = (75 / 100) * getPrincing.gains
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + pourcentage1)
+                else:
+                    print('you wrong!')
+            elif getPrincing.perdre == 2:
+                if int(perdre) == 0:
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + getPrincing.gains)
+                elif int(perdre) == 1:
+                    pourcentage1 = (80 / 100) * getPrincing.gains
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + pourcentage1)
+                elif int(perdre) == 2:
+                    pourcentage2 = (60 / 100) * getPrincing.gains
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + pourcentage2)
+                else:
+                    print('you wrong!')
+            elif getPrincing.perdre == 3:
+                if int(perdre) == 0:
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + getPrincing.gains)
+                elif int(perdre) == 1:
+                    pourcentage1 = (80 / 100) * getPrincing.gains
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + pourcentage1)
+                elif int(perdre) == 2:
+                    pourcentage2 = (70 / 100) * getPrincing.gains
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + pourcentage2)
+                elif int(perdre) == 3:
+                    pourcentage3 = (60 / 100) * getPrincing.gains
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + pourcentage3)
+                else:
+                    print('you wrong!')
+            else:
+                if int(perdre) == 0:
+                    Wallet.objects.filter(user=user).update(montant=F('montant') + getPrincing.gains)
+                else:
+                    print('you wrong!')
         return JsonResponse({'status': 1, 'message': 'success!!'})
 
 class PostInfoView(APIView):
@@ -804,22 +845,20 @@ class QuestionView(APIView):
             key = token[1].lower()[0:8]
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             user = User.objects.get(pk=tokenview)
-        category = request.GET.get('category')
-        nbQ = request.GET.get('nbQ')
-        pag = int(nbQ)
-        getcate = Category.objects.get(Q(title__icontains=category))
-        getrandomquiz = quizzes.objects.filter(category=getcate, is_live=True).order_by('?')
-        quiz = quizzes.objects.get(id=getrandomquiz[0].id)
-        ques = questions.objects.filter(quizz_id=quiz, is_live=True).order_by('?')[:pag]
+            nbQ = request.GET.get('nbQ')
+            pag = int(nbQ)
+            getrandomquestions = questions.objects.filter(is_live=True)
+            random_item = random.sample(list(getrandomquestions), pag)
 
-        if not ques:
-            return JsonResponse({'status': 0, 'message': 'no question fund'}, status=status.HTTP_400_BAD_REQUEST)
+            if not random_item:
+                return JsonResponse({'status': 0, 'message': 'no question fund'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # You have a serializer that you specified which fields should be available in fo
-        serializer = QuestionSerializer(ques, many=True)
-        # And here we send it those fields to our react component as json
-        # Check this json data on React side, parse it, render it as form.
-        return JsonResponse(serializer.data, safe=False)
+            # You have a serializer that you specified which fields should be available in fo
+            serializer = QuestionSerializer(random_item, many=True)
+            # And here we send it those fields to our react component as json
+            # Check this json data on React side, parse it, render it as form.
+            return JsonResponse(serializer.data, safe=False)
+        return JsonResponse({'status': 0, 'message': 'no question fund'}, status=status.HTTP_400_BAD_REQUEST)
         
         
 class QuestionLiveView(APIView):

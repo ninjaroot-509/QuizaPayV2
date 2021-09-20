@@ -12,6 +12,7 @@ import { useToasts } from 'react-toast-notifications';
 import axios from 'axios'
 import { getUser, getToken, removeUserSession } from '../Components/Common/Auth/Sessions'
 import useWallets from '../state/wallet/hooks/useWallets';
+import usePrincings from '../state/princing/hooks/usePrincings';
 import Loading from '../Components/Common/Loading';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,10 +39,11 @@ function getModalStyle() {
 }
 
 
-const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
+const Radio = ({setIsPay, setNBQ, setPrixQ, prixQ, setPerdre, setGains, setPrincingId}) => {
     const [wallet, isLoading, setWallets] = useWallets();
+    const [click, setClick] = useState(false)
+    const [princing, isLoading1, setPrincings] = usePrincings();
     const { addToast } = useToasts()
-    const [prix, setPrix] = useState(35)
     const [modalStyle] = useState(getModalStyle);
 
     useEffect(() => {
@@ -50,19 +52,28 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
       }
     }, [wallet, setWallets]);
 
-    const quizPay = () => {
+    useEffect(() => {
+      if (!princing.list || princing.list.length === 0) {
+        setPrincings();
+      }
+    }, [princing, setPrincings]);
+    const cost = wallet?.details?.montant
+
+    const quizPay = (prix) => {
         if (wallet?.details) {
-            if (wallet?.details?.montant >= prix) {
+            if (cost >= prix) {
               request.postPayQ(prix)
               .then((res) => {
                   setIsPay(true)
                   setWallets()
+                  setClick(true)
               })
               .catch(err => {
+                setClick(false)
                 if (err.response.status === 401) {
                   removeUserSession()
                   window.location.reload()
-              }
+                }
                 console.log('err.response.data', err.response.data)
               })
             } else {
@@ -81,25 +92,19 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
         setOpen(false);
     };
 
-    const pay35 = () => {
-      setNBQ(5)
-      setPrix(35) 
-      setPrixQ(35)
-      quizPay()
-    }
-
-    const pay50 = () => {
-      setNBQ(7)
-      setPrix(50) 
-      setPrixQ(50)
-      quizPay()
-    }
-
-    const pay75 = () => {
-      setNBQ(10)
-      setPrix(75) 
-      setPrixQ(75)
-      quizPay()
+    const handlepay = (nb, prix, prd, gains, pId) => {
+      if (!click) {
+        setClick(true)
+        setNBQ(nb)
+        setPrixQ(prix)
+        setPerdre(prd)
+        setGains(gains)
+        setPrincingId(pId)
+        setTimeout(() => { 
+          setWallets() 
+          quizPay(prix)
+        }, 5000);
+      }
     }
 
     const insuffisanceSolde = () => {
@@ -140,75 +145,30 @@ const Radio = ({setIsPay, setNBQ, setPrixQ}) => {
         >
           {body}
         </Modal>
-    
-          <div className="badge-item-stat"> 
+        {princing?.list?.map((item) =>
+          <div className="badge-item-stat" key={item.id}> 
             <p className="text-sticker">
-            <svg className="text-sticker-icon icon-minus-small">
-              <use xlinkHref="#svg-minus-small"></use>
+            <svg className="text-sticker-icon icon-plus-small">
+              <use xlinkHref="#svg-plus-small"></use>
             </svg>
-            35 HTG
+            {item.gains} HTG
           </p>
             <img className="badge-item-stat-image" src="https://quizapay.com/static/assets/img/quest/openq-b.png" alt="Questionaires"/>
         
-            <p className="badge-item-stat-title">5 Questions</p>
+            <p className="badge-item-stat-title">{item.nombres_questions} Questions</p>
         
-            <p className="badge-item-stat-text">Si vous voulez avoir 5 questions à répondre!</p>
+            <p className="badge-item-stat-text">Vous ne devez pas raté {item.perdre} {item.perdre > 1?'questions':'question'}, ou vous perdez !</p>
         
               <div style={{paddingTop: 20}}>
-                <p onClick={pay35} className="button secondary full">
+                <p onClick={()=>handlepay(item.nombres_questions, item.prix, item.perdre, item.gains, item.id)} className="button secondary full">
                   <svg className="button-icon icon-small-arrow" style={{margin: 5}}>
                     <use xlinkHref="#svg-small-arrow"></use>
                   </svg>
-                  Payer 35 Gourdes
+                  Payer {item.prix} Gourdes
                 </p>
               </div>
           </div>
-    
-          <div className="badge-item-stat"> 
-            <p className="text-sticker">
-            <svg className="text-sticker-icon icon-minus-small">
-              <use xlinkHref="#svg-minus-small"></use>
-            </svg>
-            50 HTG
-          </p>
-            <img className="badge-item-stat-image" src="https://quizapay.com/static/assets/img/quest/openq-b.png" alt="Questionaires"/>
-        
-            <p className="badge-item-stat-title">7 Questions</p>
-        
-            <p className="badge-item-stat-text">Si vous voulez avoir 7 questions à répondre!</p>
-        
-              <div style={{paddingTop: 20}}>
-                <p onClick={pay50} className="button secondary full">
-                  <svg className="button-icon icon-small-arrow" style={{margin: 5}}>
-                    <use xlinkHref="#svg-small-arrow"></use>
-                  </svg>
-                  Payer 50 Gourdes
-                </p>
-              </div>
-          </div>
-    
-          <div className="badge-item-stat"> 
-            <p className="text-sticker">
-            <svg className="text-sticker-icon icon-minus-small">
-              <use xlinkHref="#svg-minus-small"></use>
-            </svg>
-            75 HTG
-          </p>
-            <img className="badge-item-stat-image" src="https://quizapay.com/static/assets/img/quest/completedq-b.png" alt="Questionaires"/>
-        
-            <p className="badge-item-stat-title">10 Questions</p>
-        
-            <p className="badge-item-stat-text">Si vous voulez avoir 10 questions à répondre!</p>
-        
-              <div style={{paddingTop: 20}}>
-                <p onClick={pay75} className="button secondary full">
-                  <svg className="button-icon icon-small-arrow" style={{margin: 5}}>
-                    <use xlinkHref="#svg-small-arrow"></use>
-                  </svg>
-                  Payer 75 Gourdes
-                </p>
-              </div>
-          </div>
+        )}
     
     
         </div>

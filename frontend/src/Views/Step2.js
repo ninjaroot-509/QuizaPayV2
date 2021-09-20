@@ -5,16 +5,19 @@ import RandomQ from './RandomQ';
 
 const Step2 = () => {
     const [isPay, setIsPay] = useState(false)
-    const [nbQ, setNBQ] = useState(5)
-    const [prixQ, setPrixQ] = useState(35)
+    const [nbQ, setNBQ] = useState()
+    const [prixQ, setPrixQ] = useState()
+    const [perdre, setPerdre] = useState()
+    const [gains, setGains] = useState()
+    const [princingId, setPrincingId] = useState()
 
     if (isPay == true) {
         return (
-            <RandomQ nbQuestions={nbQ} prixQ={prixQ}/>
+            <RandomQ nbQuestions={nbQ} prixQ={prixQ} perdre={perdre} princingId={princingId} gains={gains}/>
         )
     } else {
         return (
-            <Radio setIsPay={setIsPay} setNBQ={setNBQ} setPrixQ={setPrixQ}/>
+            <Radio setIsPay={setIsPay} setNBQ={setNBQ} setPrixQ={setPrixQ} prixQ={prixQ} setPerdre={setPerdre} setGains={setGains} setPrincingId={setPrincingId}/>
         )
     }
 }

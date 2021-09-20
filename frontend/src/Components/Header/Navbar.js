@@ -603,7 +603,7 @@ const toggleNotifi = () => {
 
           <div className="header-actions search-bar" style={{position: 'relative'}}>
             <div className={`interactive-input dark ${search !== ''? 'active': ''}`}>
-              <input ref={refsearch} type="text" id="search-main" name="search" value={search} onChange={handleSearch} placeholder="Rechercher vos amis ici!"/>
+              <input ref={refsearch} type="text" id="search-main" name="search" onBlur={()=>setSearch('')} value={search} onChange={handleSearch} placeholder="Rechercher vos amis ici!"/>
               <div className="interactive-input-icon-wrap">
                 <svg className="interactive-input-icon icon-magnifying-glass">
                   <use xlinkHref="#svg-magnifying-glass"></use>

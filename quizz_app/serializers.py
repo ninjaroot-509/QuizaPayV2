@@ -41,6 +41,11 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+class PrincingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Princing
+        fields = '__all__'
+
 class PlayerSerializer(serializers.ModelSerializer):
     player_name = serializers.CharField(source='user.first_name')
     player_avatar = serializers.ImageField(source='user.profile.photo')
@@ -72,7 +77,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ResultSerializer(serializers.ModelSerializer):
-    quizz_name = serializers.CharField(source='quizz_id.name')
     class Meta:
         model = results
         ordering = ('-created_at', )

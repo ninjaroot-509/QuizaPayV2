@@ -15,11 +15,12 @@ import BeforeUnloadComponent from 'react-beforeunload-component';
 import useWallets from '../state/wallet/hooks/useWallets';
 import useLevels from '../state/level/hooks/useLevels';
 
-const Quizz = ({questions, nbQuestions, prixQ}) => {
+const Quizz = ({questions, nbQuestions, prixQ, perdre, gains, princingId}) => {
     const token = getToken()
     const [timer, setTimer] = useState(questions[0].timer_secs)
     const [right, setRight] = useState(0)
     const [all, setAll] = useState()
+    const [wrong, setWrong] = useState(0)
     const [quizId, setQuizId] = useState()
     const [allQN, setAllQN] = useState(1)
     const [timeactive, setTimeactive] = useState(true)
@@ -29,6 +30,7 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
     const [timeout, setTimeOutState] = useState(false)
 
     const winn = Math.round((right) * (100) / nbQuestions)
+    const winnGains = perdre == 1 ? wrong == 0 ? gains : wrong == 1? (75 / 100) * gains : 0 : perdre == 2 ? wrong == 0 ? gains : wrong == 1? (80 / 100) * gains : wrong == 2? (60 / 100) * gains : 0 : perdre == 3 ? wrong == 0 ? gains : wrong == 1? (80 / 100) * gains : wrong == 2? (70 / 100) * gains : wrong == 3?  (60 / 100) * gains : 0 : wrong == 0 ? gains : 0
 
     const Preduce = prixQ / nbQuestions
     const som = Preduce * right * 1.4
@@ -43,11 +45,14 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
         if (!quizId) {
             setQuizId(questions[0].quizz_id)
         }
+        if (wrong > perdre) {
+            handleGameOver(questions.length)
+        }
     })
 
     const sauvegarder = () => {
-        request.postWinPay(prixQ, nbQuestions, right)
-        request.postResults(right, nbQuestions, quizId, prixQ)
+        request.postWinPay(princingId, wrong)
+        request.postResults(right, nbQuestions, winnGains, prixQ)
         request.postProgress(progression)
         setTimeout(() => { 
             setWallets() 
@@ -65,6 +70,7 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
     const timeActive = () => {
         setTimeactive(true)
     }
+
 
     const handleGameOver = (all) => {
         setEnd(true)
@@ -152,9 +158,9 @@ const Quizz = ({questions, nbQuestions, prixQ}) => {
                             ignoreBefoureunloadDocument={true}
                             alertMessage={"Êtes-vous sûr de vouloir quitter? Les modifications ne seront pas enregistrées."}
                         >
-                            <TheGame setTimeOutState={setTimeOutState} timeout={timeout} end={end} handleCorrect={handleCorrect} handleGameOver={handleGameOver} getTime={restartTime} timeActiveBtn={timeActive} timeDesactive={timeDesactive} questions={questions} nbQuestions={nbQuestions} timeactive={timeactive} setStartTimer={setStartTimer} right={right} handleAllQN={handleAllQN}/>
+                            <TheGame setWrong={setWrong} wrong={wrong} setTimeOutState={setTimeOutState} timeout={timeout} end={end} handleCorrect={handleCorrect} handleGameOver={handleGameOver} getTime={restartTime} timeActiveBtn={timeActive} timeDesactive={timeDesactive} questions={questions} nbQuestions={nbQuestions} timeactive={timeactive} setStartTimer={setStartTimer} right={right} handleAllQN={handleAllQN}/>
                         </BeforeUnloadComponent>
-                        :   <Results nbQuestions={nbQuestions} right={right} all={all} winn={winn} prix={som} sauvegarder={sauvegarder}/>
+                        :   <Results nbQuestions={nbQuestions} right={right} all={all} gains={winnGains} winn={winn} prix={som} sauvegarder={sauvegarder}/>
                     }
                     </div>
                 </div>

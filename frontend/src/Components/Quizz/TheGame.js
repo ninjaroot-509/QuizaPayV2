@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import request from '../Common/HttpRequests'
 import useSound from 'use-sound';
 
-export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handleAllQN, handleGameOver, timeactive, getTime, timeActiveBtn, timeDesactive, questions, nbQuestions, setStartTimer }) => {
+export const TheGame = ({ setWrong, wrong, setTimeOutState, timeout, right, handleCorrect, handleAllQN, handleGameOver, timeactive, getTime, timeActiveBtn, timeDesactive, questions, nbQuestions, setStartTimer }) => {
     const [questionNo, setQuestionNo] = useState(0)
     const [disable, setdisable] = useState(false)
     const [choiceB, setChoiceB] = useState('')
@@ -26,6 +26,7 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
                 playTime()
                 setTimeOutState(false)
                 nextQuestion()
+                setWrong(wrong + 1)
                 setChoiceB('')
             }, 1500);
         }
@@ -49,6 +50,7 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
             playCorrect()
         } else {
             playWrong()
+            setWrong(wrong + 1)
         }
         setTimeout(() => {
             nextQuestion()
@@ -137,7 +139,7 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
 
                 {timeout?
                 <div style={{padding: '100px 50px'}}>
-                    <p className="user-short-description-title">le temps est ecoule!</p>
+                    <p className="user-short-description-title">Le temps s'est écoulé!</p>
                 </div>
                 :
                 <>
@@ -147,25 +149,25 @@ export const TheGame = ({ setTimeOutState, timeout, right, handleCorrect, handle
 
                 <div style={{margin: "5px 25px"}}>
                     <div style={{padding: 5}}>
-                        <button name="a" disabled={disable} className={`button ${choiceB === 'a'? questions[questionNo].correct_option === 'a'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`} onClick={handleAnswerClick}>
+                        <button name="a" disabled={disable} className={`button noOutLine ${choiceB === 'a'? questions[questionNo].correct_option === 'a'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`} onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_a}</span>
                         </button>
                     </div>
 
                     <div style={{padding: 5}}>
-                        <button name="b" disabled={disable} className={`button ${choiceB === 'b'? questions[questionNo].correct_option === 'b'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`} onClick={handleAnswerClick}>
+                        <button name="b" disabled={disable} className={`button noOutLine ${choiceB === 'b'? questions[questionNo].correct_option === 'b'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`} onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_b}</span>
                         </button>
                     </div>
 
                     <div style={{padding: 5}}>
-                        <button name="c" disabled={disable} className={`button ${choiceB === 'c'? questions[questionNo].correct_option === 'c'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`}  onClick={handleAnswerClick}>
+                        <button name="c" disabled={disable} className={`button noOutLine ${choiceB === 'c'? questions[questionNo].correct_option === 'c'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`}  onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_c}</span>
                         </button>
                     </div>
 
                     <div style={{padding: 5}}>
-                        <button name="d" disabled={disable} className={`button ${choiceB === 'd'? questions[questionNo].correct_option === 'd'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`}  onClick={handleAnswerClick}>
+                        <button name="d" disabled={disable} className={`button noOutLine ${choiceB === 'd'? questions[questionNo].correct_option === 'd'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`}  onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_d}</span>
                         </button>
                     </div>

@@ -70,6 +70,18 @@ class User(AbstractUser):
     def __str__(self):
         return self.first_name
 
+
+class Princing(models.Model):
+    name = models.CharField(max_length=500)
+    prix = models.FloatField(default=10)
+    perdre = models.IntegerField(default=0)
+    nombres_questions = models.IntegerField(default=10)
+    gains = models.FloatField(default=250)
+
+    def __str__(self):
+        return self.name
+
+
 class Quest(models.Model):
     icon = models.ImageField(upload_to='quests/icons/')
     cover = models.ImageField(upload_to='quests/cover/')
@@ -187,7 +199,7 @@ class Challenge(models.Model):
     gameID = models.CharField(max_length=10)
     prix = models.FloatField(null=True)
     nombres_questions = models.IntegerField(null=True)
-    nombres_tours = models.CharField(max_length=10, null=True, blank=True)
+    nombres_tours = models.IntegerField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     start = models.BooleanField(default=False)
     end = models.BooleanField(default=False)
@@ -213,7 +225,7 @@ class Player(models.Model):
         return '{} - {}'.format(self.user, self.score)
 
 class results(models.Model):
-    quizz_id = models.ForeignKey(quizzes, on_delete=models.CASCADE)
+    quizz_id = models.ForeignKey(quizzes, on_delete=models.CASCADE, null=True, blank=True)
     player = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
     total = models.IntegerField(default=0)

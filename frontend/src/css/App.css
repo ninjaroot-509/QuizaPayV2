@@ -1496,6 +1496,14 @@ figure>img {
     box-shadow: 3px 5px 10px 0 rgba(62, 63, 94, .2)
 }
 
+.noHover{
+    pointer-events: none;
+}
+
+.noOutLine{
+    outline: none; 
+}
+
 .button.no-shadow {
     box-shadow: none
 }
