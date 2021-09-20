@@ -149,25 +149,25 @@ export const TheGame = ({ setWrong, wrong, setTimeOutState, timeout, right, hand
 
                 <div style={{margin: "5px 25px"}}>
                     <div style={{padding: 5}}>
-                        <button name="a" disabled={disable} className={`button noOutLine ${choiceB === 'a'? questions[questionNo].correct_option === 'a'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`} onClick={handleAnswerClick}>
+                        <button name="a" disabled={disable} className={`button noOutLine ${choiceB === 'a'? questions[questionNo].correct_option === 'a'? 'social-link artstation' : 'social-link youtube': 'primary'} full`} onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_a}</span>
                         </button>
                     </div>
 
                     <div style={{padding: 5}}>
-                        <button name="b" disabled={disable} className={`button noOutLine ${choiceB === 'b'? questions[questionNo].correct_option === 'b'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`} onClick={handleAnswerClick}>
+                        <button name="b" disabled={disable} className={`button noOutLine ${choiceB === 'b'? questions[questionNo].correct_option === 'b'? 'social-link artstation' : 'social-link youtube': 'primary'} full`} onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_b}</span>
                         </button>
                     </div>
 
                     <div style={{padding: 5}}>
-                        <button name="c" disabled={disable} className={`button noOutLine ${choiceB === 'c'? questions[questionNo].correct_option === 'c'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`}  onClick={handleAnswerClick}>
+                        <button name="c" disabled={disable} className={`button noOutLine ${choiceB === 'c'? questions[questionNo].correct_option === 'c'? 'social-link artstation' : 'social-link youtube': 'primary'} full`}  onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_c}</span>
                         </button>
                     </div>
 
                     <div style={{padding: 5}}>
-                        <button name="d" disabled={disable} className={`button noOutLine ${choiceB === 'd'? questions[questionNo].correct_option === 'd'? 'social-link artstation' : 'social-link youtube': 'secondary'} full`}  onClick={handleAnswerClick}>
+                        <button name="d" disabled={disable} className={`button noOutLine ${choiceB === 'd'? questions[questionNo].correct_option === 'd'? 'social-link artstation' : 'social-link youtube': 'primary'} full`}  onClick={handleAnswerClick}>
                             <span className="btn_text">{questions[questionNo].option_d}</span>
                         </button>
                     </div>

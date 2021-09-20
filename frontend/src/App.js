@@ -6,6 +6,8 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import history from './history';
 import Home from './Views/Home';
+import MarketPlace from './Views/MarketPlace';
+import Demandes from './Views/Demandes';
 import TAC from './Views/TAC';
 import PAC from './Views/PAC';
 import About from './Views/About';
@@ -62,12 +64,14 @@ function App() {
             {/* <Route exact path="/a-propos" component={About} /> */}
             {/* <Route exact path="/contact" component={Contact} /> */}
             <PrivateRoute exact path="/etape-1" component={Step1} />
-            <PrivateRoute exact path="/etape-2" component={Step2} />
+            <PrivateRoute exact path="/play" component={Step2} />
             <PrivateRoute exact path="/spin" component={SpinHome} />
             {/* <PrivateRoute exact path="/live/quiz" component={LiveQuiz} /> */}
             <PrivateRoute exact path="/challenge/etape-1" component={StepC2} />
             <PublicRoute path="/connexion" component={Auth} />
             <Route path="/complete-inscription" component={CompleteI} />
+            <Route exact path="/marketplace" component={MarketPlace} />
+            <Route exact path="/demandes-amis" component={Demandes} />
             <PrivateRoute path="/mon-profile" component={UserPage} />
             <PrivateRoute path="/profile-edite" component={ProfileUpdate} />
             <PrivateRoute path="/depot/moncash" component={DepotWallet} />

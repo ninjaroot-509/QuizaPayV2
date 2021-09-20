@@ -171,3 +171,91 @@ class PrincingAdmin(admin.ModelAdmin):
     '''Admin View for Princing'''
 
     list_display = ('name', 'prix', 'perdre', 'nombres_questions', 'gains',)
+
+def make_refund_accepted(modeladmin, request, queryset):
+    queryset.update(refund_requested=False, refund_granted=True)
+
+
+make_refund_accepted.short_description = 'Mettre à jour les commandes de remboursement accordées'
+
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['user',
+                    'ordered',
+                    'being_delivered',
+                    'received',
+                    'refund_requested',
+                    'refund_granted',
+                    'addresse',
+                    'coupon'
+                    ]
+    list_display_links = [
+        'user',
+        'addresse',
+        'coupon'
+    ]
+    list_filter = ['user',
+                   'ordered',
+                   'being_delivered',
+                   'received',
+                   'refund_requested',
+                   'refund_granted']
+    search_fields = [
+        'user__first_name',
+        'ref_code'
+    ]
+    actions = [make_refund_accepted]
+
+
+class AddressAdmin(admin.ModelAdmin):
+    list_display = [
+        'user',
+        'nom',
+        'prenom',
+        'identification_type',
+        'identification_number',
+        'quartier_addresse',
+        'apartement_addresse',
+        'city',
+        'is_default'
+    ]
+    list_filter = ['is_default', 'identification_type']
+    search_fields = ['user', 'quartier_addresse','nom','prenom', 'apartement_addresse', 'city']
+
+
+def copy_items(modeladmin, request, queryset):
+    for object in queryset:
+        object.id = None
+        object.save()
+
+
+copy_items.short_description = 'Dupliquer produits'
+
+
+class ItemAdmin(admin.ModelAdmin):
+    list_display = [
+        'title',
+        'category',
+    ]
+    list_filter = ['title', 'category']
+    search_fields = ['title', 'category']
+    # prepopulated_fields = {"slug": ("title",)}
+    actions = [copy_items]
+
+class MarketCategoryAdmin(admin.ModelAdmin):
+    list_display = [
+        'title',
+        'is_active'
+    ]
+    list_filter = ['title', 'is_active']
+    search_fields = ['title', 'is_active']
+    prepopulated_fields = {"slug": ("title",)}
+
+
+admin.site.register(Item, ItemAdmin)
+admin.site.register(MarketCategory, MarketCategoryAdmin)
+admin.site.register(OrderItem)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(Coupon)
+admin.site.register(Refund)
+admin.site.register(BillingAddress, AddressAdmin)

@@ -22,7 +22,7 @@ const Step1 = () => {
         <p className="badge-item-stat-text">Cliquez ici, si vous voulez jouer seul!</p>
     
           <div style={{paddingTop: 20}}>
-            <Link to="/etape-2" className="button secondary full">
+            <Link to="/play" className="button secondary full">
               <svg className="button-icon icon-play" style={{margin: 5}}>
                 <use xlinkHref="#svg-play"></use>
               </svg>

@@ -19,7 +19,7 @@ export const Results = ({ right, nbQuestions, winn, prix, gains, sauvegarder }) 
         <>
             <div className="profile-header-info" style={{height: 440}}>
                 <div className="user-short-description" style={{paddingTop: 40}}>
-                <p className="user-short-description-title" style={{margin: "7px 20px"}}>{winn >= 50?'Bravo':'Désolé'} {user.first_name}!</p>
+                <p className="user-short-description-title" style={{margin: "7px 20px"}}>{gains > 1?'Bravo':'Désolé'} {user.first_name}!</p>
                 <div style={{textAlign: 'center'}}>
                     <div> 
                         <span style={{fontSize: 70, fontWeight: 'bold'}}>
@@ -27,7 +27,7 @@ export const Results = ({ right, nbQuestions, winn, prix, gains, sauvegarder }) 
                         </span>
                     </div>
                     <div>
-                        <span style={{fontSize: 25, fontWeight: 'bold'}} role="img" aria-labelledby="icon">{winn >= 50? "Tu as gagné 🤓 🤩 🥳" : "Tu as perdu 🥺 😢 😭" }</span> 
+                        <span style={{fontSize: 25, fontWeight: 'bold'}} role="img" aria-labelledby="icon">{gains > 1? "Tu as gagné 🤓 🤩 🥳" : "Tu as perdu 🥺 😢 😭" }</span> 
                     </div>
 
                     <div>
@@ -39,7 +39,7 @@ export const Results = ({ right, nbQuestions, winn, prix, gains, sauvegarder }) 
                 
 
                     <div style={{padding: 20}}>
-                        <Link to={"/etape-2"} onClick={()=> window.location.reload()} className="button secondary small">
+                        <Link to={"/play"} onClick={()=> window.location.reload()} className="button secondary small">
                             <span style={{padding: 15}}>Jouer à nouveau!?</span>
                         </Link>
                     </div>

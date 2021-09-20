@@ -120,6 +120,7 @@ const getResultat = () => axios.get(`${url}results/`, config).then(res => res.da
     }
 });
 
+const getProduit = () => axios.get(`${url}produits/`, config).then(res => res.data)
 const getRetrait = () => axios.get(`${url}retrait/`, config).then(res => res.data)
 const getQuizz = (id) => axios.get(`${url}quizzes/${id}/`).then(res => res.data)
 const getQuestions = (id) => axios.get(`${url}questions/?quizz_id=${id}`).then(res => res.data).catch(error => {
@@ -136,4 +137,4 @@ const getQuestionsV2 = (nbQuestions) => axios.get(`${url}questions/?nbQ=${nbQues
 });
 
 const getPrincing = () => axios.get(`${url}princings/`, config).then(res => res.data)
-export default { postLogin, postRegister, postAcceptFriend, postCancelFriend, postAddFriend, postInfo, postProgress, postPayQ, postDepot, postDepotDone, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getPrincing, getStart, getQuizz, getQuestions, getQuestionsV2, getQuizOrder, getWallet, getCoin, getResultat, getRetrait, getLevel, getDemandeRecuList, getDemandeSentList, getUserList, getFriendList }
+export default { postLogin, postRegister, postAcceptFriend, postCancelFriend, postAddFriend, postInfo, postProgress, postPayQ, postDepot, postDepotDone, postTry, postResults, postWinPay, postQuizRegister, postCreateChallenge, postStartChallenge, postPlayersChallenge, postJoinChallenge, postJoinPayChallenge, postAnswerChallenge, postEndChallenge, getPlayers, getPrincing, getStart, getQuizz, getProduit, getQuestions, getQuestionsV2, getQuizOrder, getWallet, getCoin, getResultat, getRetrait, getLevel, getDemandeRecuList, getDemandeSentList, getUserList, getFriendList }

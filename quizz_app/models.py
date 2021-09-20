@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.mail import send_mail, BadHeaderError, mail_admins
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from autoslug import AutoSlugField
 from django.utils.html import format_html
 
 class UserManager(BaseUserManager):
@@ -321,3 +322,189 @@ class Retrait(models.Model):
     
     def __str__(self):
         return '{} a retire {} Gourdes a son portefeuille le {}'.format(self.user.first_name, self.montant, self.date) # TODO
+
+
+
+class MarketCategory(models.Model):
+    title = models.CharField(max_length=100)
+    slug = models.SlugField()
+    description = models.TextField()
+    image = models.FileField(upload_to='market-categories/img/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+
+LABEL_CHOICES = (
+    ('V', 'vente'),
+    ('N', 'nouveau'),
+    ('P', 'promotion')
+)
+
+SIZE_CHOICES = (
+    ('M', 'Medium'),
+    ('L', 'Large'),
+    ('SL', 'Longueur standard'),
+    ('XL', 'Extra Large'),
+    ('XXL', 'Double Extra Large'),
+    ('SAK', 'Sak'),
+    ('P', 'Plat'),
+    ('KE', 'Caisse'),
+    ('B', 'Boite'),
+    ('C', 'Chaise'),
+    ('U', 'Unite'),
+)
+
+ETATS_CHOICES = (
+    ('N', 'Neuf'),
+    ('U', 'Usage'),
+    ('E', 'En bonne etat'),
+)
+
+class Item(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='item_author', on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    prix = models.FloatField()
+    prix_avec_reduction = models.FloatField(blank=True, null=True)
+    prix_livraison = models.FloatField()
+    category = models.ForeignKey(MarketCategory, on_delete=models.CASCADE)
+    etat = models.CharField(choices=ETATS_CHOICES, max_length=1)
+    label = models.CharField(choices=LABEL_CHOICES, max_length=1)
+    size = models.CharField(choices=SIZE_CHOICES, max_length=3)
+    slug = AutoSlugField(populate_from='title', unique_with=['title'], unique=True)
+    quantiter_disponible = models.IntegerField(default=1)
+    description_court = models.CharField(max_length=100)
+    description_long = models.TextField()
+    image = models.ImageField(upload_to='product_photos/%Y/%m/%d/')
+    photo_1 = models.ImageField(upload_to='product_photos/%Y/%m/%d/')
+    photo_2 = models.ImageField(upload_to='product_photos/%Y/%m/%d/', blank=True, null=True)
+    photo_3 = models.ImageField(upload_to='product_photos/%Y/%m/%d/', blank=True, null=True)
+    photo_4 = models.ImageField(upload_to='product_photos/%Y/%m/%d/', blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ('-updated',)
+
+    def __str__(self):
+        return self.author.first_name + "-" + self.title
+    
+    def get_item_price(self):
+        return self.prix
+    
+    def get_livraison_price(self):
+        return self.prix_livraison
+
+    def get_discount_item_price(self):
+        return self.prix_avec_reduction
+
+    def get_total_price(self):
+        if self.prix_avec_reduction:
+            return self.get_discount_item_price() + get_livraison_price()
+        return self.get_item_price() + get_livraison_price()
+
+    def get_amount_saved(self):
+        return self.get_item_price() - self.get_discount_item_price()
+
+class OrderItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    ordered = models.BooleanField(default=False)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} of {self.item.title}"
+
+    def get_total_item_price(self):
+        return self.quantity * self.item.prix
+
+    def get_total_discount_item_price(self):
+        return self.quantity * self.item.prix_avec_reduction
+
+    def get_amount_saved(self):
+        return self.get_total_item_price() - self.get_total_discount_item_price()
+
+    def get_final_price(self):
+        if self.item.prix_avec_reduction:
+            return self.get_total_discount_item_price()
+        return self.get_total_item_price()
+
+CHOICES_TYPE_ID = (
+    ('C', 'CIN'),
+    ('P', 'Passport'),
+    ('N', 'NIF'),
+    ('M', 'Mot-De-Passe'),
+)
+
+class BillingAddress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    quartier_addresse = models.CharField(max_length=100)
+    apartement_addresse = models.CharField(max_length=100)
+    city = models.CharField(choices=settings.CHOICES_CITY, max_length=4)
+    identification_type = models.CharField(choices=CHOICES_TYPE_ID, max_length=1)
+    identification_number = models.CharField(max_length=250)
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.first_name
+
+    class Meta:
+        verbose_name_plural = 'BillingAddresses'
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ref_code = models.CharField(max_length=20)
+    items = models.ManyToManyField(OrderItem)
+    start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField()
+    ordered = models.BooleanField(default=False)
+    addresse = models.ForeignKey('BillingAddress', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
+    coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
+    being_delivered = models.BooleanField(default=False)
+    received = models.BooleanField(default=False)
+    refund_requested = models.BooleanField(default=False)
+    refund_granted = models.BooleanField(default=False)
+
+    '''
+    1. Item added to cart
+    2. Adding a BillingAddress
+    (Failed Checkout)
+    3. Payment
+    4. Being delivered
+    5. Received
+    6. Refunds
+    '''
+
+    def __str__(self):
+        return self.user.first_name
+
+    def get_total(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.get_final_price()
+        if self.coupon:
+            total -= self.coupon.amount
+        return total
+
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=15)
+    amount = models.FloatField()
+
+    def __str__(self):
+        return self.code
+
+
+class Refund(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    reason = models.TextField()
+    accepted = models.BooleanField(default=False)
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"{self.pk}"

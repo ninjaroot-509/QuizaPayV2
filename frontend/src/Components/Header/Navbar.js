@@ -23,6 +23,7 @@ const Navbar = ({theme, toggleTheme}) => {
     const [friendrequestlist, isLoadingfr, setFriendRequests] = useFriendRequests();
     const [friend, isLoadingf, setFriends] = useFriends();
     const [userlist, isLoadingU, setUserLists] = useUsers();
+    const [waldis, setWaldis] = useState(true)
     const [menu, setMenu] = useState('')
     const [search, setSearch] = useState('')
     const [basket, setBasket] = useState('')
@@ -527,16 +528,20 @@ const toggleNotifi = () => {
               </div>
 
               <h1 className="header-brand-text">QuizaPay</h1>
-              <div style={{paddingLeft: 20}}>
-                <div style={{padding: '5px 7px',background: 'white',borderRadius: 25}}>
-                    <span style={{fontFamily: 'fantasy',fontSize: 14,color: '#005'}}>{Math.round(wallet?.details?.montant)}HTG</span>
-                <Link to="/depot/moncash" style={{position: 'absolute'}}>
-                  <div style={{padding: '1px 5px',borderRadius: 20,background: '#ff8612'}}>
-                    <span style={{color: 'white'}}>+</span>
+              {waldis?
+                <div style={{paddingLeft: 20, transition: "transform .35s ease-in-out"}}>
+                  <div style={{padding: '5px 7px',background: '#aed9f3',borderRadius: 25, boxShadow: "3px 5px 20px 0 rgb(94 92 154 / 58%)"}}>
+                      <span style={{fontFamily: 'fantasy',fontSize: 14,color: '#005'}}>{Math.round(wallet?.details?.montant)}HTG</span>
+                  <Link to="/depot/moncash" style={{position: 'absolute'}}>
+                    <div style={{padding: '1px 5px',borderRadius: 20,background: '#ff8612'}}>
+                      <span style={{color: 'white'}}>+</span>
+                    </div>
+                  </Link>
                   </div>
-                </Link>
                 </div>
-              </div>
+                :
+                ''
+              }
 
             </div>
           </div>
@@ -603,7 +608,11 @@ const toggleNotifi = () => {
 
           <div className="header-actions search-bar" style={{position: 'relative'}}>
             <div className={`interactive-input dark ${search !== ''? 'active': ''}`}>
-              <input ref={refsearch} type="text" id="search-main" name="search" onBlur={()=>setSearch('')} value={search} onChange={handleSearch} placeholder="Rechercher vos amis ici!"/>
+              <input ref={refsearch} type="text" id="search-main" name="search" onFocus={()=>setWaldis(false)} onBlur={()=>{
+                setSearch('') 
+                setWaldis(true)
+            }} 
+            value={search} onChange={handleSearch} placeholder="Rechercher vos amis ici!"/>
               <div className="interactive-input-icon-wrap">
                 <svg className="interactive-input-icon icon-magnifying-glass">
                   <use xlinkHref="#svg-magnifying-glass"></use>
@@ -903,13 +912,13 @@ const toggleNotifi = () => {
 
           <div className="bar-actions">
             <div className="action-list dark">
-              <Link className="action-list-item" to="#">
+              <Link className="action-list-item" to="/marketplace">
                 <svg className="action-list-item-icon icon-shopping-bag">
                   <use xlinkHref="#svg-shopping-bag"></use>
                 </svg>
               </Link>
 
-              <Link className="action-list-item" to="#">
+              <Link className="action-list-item" to="/demandes-amis">
                 <svg className="action-list-item-icon icon-friend">
                   <use xlinkHref="#svg-friend"></use>
                 </svg>
@@ -921,14 +930,14 @@ const toggleNotifi = () => {
                 </svg>
               </Link>
 
-              <Link className="action-list-item unread" to="#">
+              <Link className="action-list-item unread" to="#notifications">
                 <svg className="action-list-item-icon icon-notification">
                   <use xlinkHref="#svg-notification"></use>
                 </svg>
               </Link>
             </div>
 
-            <Link className="action-item-wrap" to="#">
+            <Link className="action-item-wrap" to="#parametre">
               <div className="action-item dark">
                 <svg className="action-item-icon icon-settings">
                   <use xlinkHref="#svg-settings"></use>

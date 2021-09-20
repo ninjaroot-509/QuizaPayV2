@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import request from '../Components/Common/HttpRequests';
+import Loading from '../Components/Common/Loading';
 import Quizz from './Quizz'
 import useSound from 'use-sound';
 
@@ -8,6 +9,12 @@ const RandomQ = ({nbQuestions, prixQ, perdre, gains, princingId}) => {
 
   const [questions, setQuestions] = useState([])
   const [click, setClick] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      onClickGene()
+    }, 5000);
+  })
 
   const onClickGene = () => {
     if (click === false){
@@ -30,13 +37,7 @@ const RandomQ = ({nbQuestions, prixQ, perdre, gains, princingId}) => {
 
   if (load == true) {
     return (
-      <div className="content-grid">
-          <div>
-              <button className="button primary" onClick={onClickGene}>
-                générer les questions
-              </button>
-          </div>
-      </div>
+        <Loading />
     )
   } else {
     return (

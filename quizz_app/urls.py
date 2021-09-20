@@ -10,6 +10,7 @@ router.register('quizzes', quizzViewSet, 'quizzes' )
 
 urlpatterns = [
     url(r'^princings/$', PrincingView.as_view()),
+    url(r'^produits/$', ProductView.as_view()),
     url(r'^user-details/$', UserDetailsView.as_view()),
     url(r'^info-user/$', PostInfoView.as_view()),
     url(r'^users/$', UserListView.as_view()),

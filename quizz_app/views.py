@@ -383,6 +383,23 @@ class PrincingView(APIView):
         serializer = PrincingSerializer(pr, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+
+class ProductView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+        prod = Item.objects.all().order_by('-updated')
+        serializer = ItemSerializer(prod, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
 class QuizResultsView(APIView):
     def get(self, request, format=None):
         pk = request.GET.get('pk', None)

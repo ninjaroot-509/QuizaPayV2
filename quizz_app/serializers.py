@@ -122,3 +122,53 @@ class WalletRequestedSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+class CartSerializer(serializers.ModelSerializer):
+    item_title = serializers.CharField(
+        source='item.title'
+    )
+    item_prix = serializers.CharField(
+        source='item.prix'
+    )
+    item_prix_reduction = serializers.CharField(
+        source='item.prix_reduction'
+    )
+    item_get_amount_saved = serializers.CharField(
+        source='get_amount_saved'
+    )
+    item_get_final_price = serializers.CharField(
+        source='get_final_price'
+    )
+    item_image = serializers.ImageField(
+        source='item.image'
+    )
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+class ItemSerializer(serializers.ModelSerializer):
+    category_display = serializers.CharField(
+        source='category.title'
+    )
+    etat_display = serializers.CharField(
+        source='get_etat_display'
+    )
+    size_display = serializers.CharField(
+        source='get_size_display'
+    )
+    author_first_name = serializers.CharField(
+        source='author.first_name'
+    )
+    author_last_name = serializers.CharField(
+        source='author.last_name'
+    )
+    author_photo = serializers.CharField(
+        source='author.photo.url'
+    )
+    class Meta:
+        model = Item
+        fields = '__all__'
